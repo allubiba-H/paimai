@@ -1,0 +1,537 @@
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>卓越--拍卖信息</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
+    <link href="JsCss/common.css" rel="stylesheet" media="screen" type="text/css"/>
+    <script type="text/javascript" src="JsCss/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="JsCss/vue.min.js"></script>
+    <script type="text/javascript" src="JsCss/axios.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="JsCss/daojishi.js"></script>
+    <script src="JsCss/index.js"></script>
+    <style type="text/css">
+        #index a {
+            margin: 5px 10px;
+            text-decoration: none;
+        }
+
+        .indexSpan {
+            margin: 10px;
+        }
+
+        .cz-con-text > span {
+            margin-right: 20px;
+        }
+
+        .light {
+            color: red;
+        }
+
+        span {
+            color: #999999;
+        }
+
+        a {
+            text-decoration: none;
+            color: #999999;
+        }
+
+        a:hover {
+            color: #A44239;
+        }
+
+        .aisAlive {
+            font-weight: bolder;
+            color: #A44239;
+        }
+
+        .page {
+            border: 1px #ff8200 solid;
+            background-color: white;
+            color: #999999;
+        }
+    </style>
+</head>
+
+<body>
+<div class="header">
+    <ul class="top-link">
+        <li class="title"><a href="#"
+                             onclick="this.style.behavior='url(#default#homepage)';this.setHomePage('huiyuaninsert.html');"
+                             title='设置本站为浏览器首页(启始页)'>设为首页</a></li>
+        <li class="pi"></li>
+        <li class="title"><a target=_top href="register.html">注册</a></li>
+        <li class="pi"></li>
+        <li class="title"><a href="login.html">登录</a></li>
+    </ul>
+
+    <div class="logo"><a href="index.html"><img src="images/logo.png" width="250" height="82"/></a></div>
+    <div class="menu">
+        <ul>
+            <li><a href="about.html">关于我们</a><span>about us</span></li>
+            <li class="active"><a href="auctioning.html">拍卖信息</a><span>Auction information</span></li>
+            <li><a href="auctioninsert.html">商品展示</a><span>Product showcase</span></li>
+            <li><a href="showData.html">个人信息</a><span>Personal information</span></li>
+            <li><a href="chargeMoney.html">资金管理</a><span>Money management</span></li>
+
+        </ul>
+    </div>
+</div>
+
+<div class="clr50"></div>
+<div class="zy_banner_bg">
+    <div class="zy_banner"></div>
+</div>
+
+
+<div class="zy_main" id="content">
+    <div class="Left_subMenu">
+        <div class="top_bg"></div>
+        <div class="c_bg">
+            <div class="title">拍卖信息</div>
+            <ul>
+                <li v-on:click="showinfo(0)" :class="{'activer':num==0}"><a href="auctioning.html">正在竞拍</a></li>
+                <li v-on:click="showinfo(1)" :class="{'activer':num==1}"><a href="showAuction.html">拍卖信息查询</a>
+                </li>
+                <li v-on:click="showinfo(2)" :class="{'activer':num==2}"><a href="auctioninsert.html">发布拍品</a>
+                </li>
+                <li v-on:click="showinfo(3)" :class="{'activer':num==3}"><a href="myOrder.html">我的订单</a></li>
+            </ul>
+        </div>
+        <div class="bottom_bg"></div>
+
+        <div class="ph">
+            <img src="images/ph.png" width="169" height="67"/>
+        </div>
+    </div>
+
+    <div class="zy_right">
+        <div class="position">当前位置：<a href="#">拍卖信息</a> > <a href="#">正在竞拍</a></div>
+        <div class="zy_title">
+            <p>正在竞拍<span>Auction information </span></p>
+        </div>
+
+
+        <!-- 拍品列表  end-->
+
+
+        <!-- 竞拍页面  begin-->
+        <div id="auctioninfo">
+            <div style="padding-top:25px;float: left;">
+                <div>
+                    <!-- <img v-bind:src="picpath" width="625" height="328" /> -->
+                    <img :src="'http://localhost:9999/upload/img/'+auction.gpic" width="400" height="350"/>
+                </div>
+                <div style="height: 20px">&nbsp;</div>
+                <div style="height: 20px;clear: both;">&nbsp;</div>
+            </div>
+            <div style="padding-left: 500px;padding-top:25px;">
+
+                <span style="font-size: 30px"></span>
+                <div style="text-align: center;margin-bottom: 15px;">
+                    <span id="timeMsg" style="color: green; font-size: 18px;">{{time}}</span>
+                </div>
+                <p><span>当前竞拍价：</span>
+                    <span v-if="auction.nprice != 0"
+                          style="color: red;font-size: 25px">{{auction.nprice}}</span>
+                    <span v-else-if="auction.nprice == 0"
+                          style="color: red;font-size: 25px">{{auction.bprice}}</span>
+                </p>
+                <p><span>当前竞拍者：</span>
+                    <span style="color: red;font-size: 20px">{{auction.hid}}</span>
+                </p>
+                <br>
+                <p><span>宝物名称：</span>{{auction.gname}}</p>
+                <p><span>起拍价：</span>¥{{auction.bprice}}</p>
+                <p><span>增长价：</span>¥{{auction.increase}}</p>
+                <p><span>保证金：</span>¥{{auction.abmoney}}</p>
+                <p><span>开拍日期：</span>{{auction.stime}} 08:00</p>
+                <p><span>结拍日期：</span>{{auction.etime}} 20:00</p>
+                <p><span>简介：</span>{{auction.abackup}}</p>
+                <br>
+                <br>
+                <p>请输入竞拍价格：<input @blur="validMyNprice" @mouseout="validMyNprice" v-model="myNprice"
+                                  type="number" id="price" name="price" style="width: 120px"/>
+                    <span id="myNpriceMsg">
+
+							</span>
+                </p>
+
+                <br>
+                <p style="padding-left: 70px">
+                    <input @click="playAuction" type="button" value="立即竞拍" class="jp-button"/>
+                </p>
+                <span style="color: red;font-size: 20px"></span>
+            </div>
+            <span id="playAuctionMsg" style="margin-left: 120px;">
+
+					</span>
+        </div>
+        <!-- 竞拍页面  end-->
+
+        <div class="clr10"></div>
+
+        <!-- 评论区begin -->
+        <div id="commentText" style="margin-top: 50px;">
+
+            <form>
+                <input v-model="text" type="text" placeholder=" 在此处发布你的评论"
+                       style="outline: none; width: 600px;height: 40px; background-color: white; border: 1.5px #A44239 solid; border-radius: 5px;">
+                <input @click="submitText()" type="button" value="评论"
+                       style="border-radius: 15px; width: 80px; height: 45px; color: white; border: none; background-color: #A44239; font-weight: bolder; margin-top: 2px;">
+            </form>
+            <br>
+            <!-- 排序区 按热度/按时间 -->
+            <div style="width: 145px; padding-bottom: 20px;">
+                <div style="display: inline; padding: 10px;"><a href="#" :class="{'aisAlive' : aliveNum == 1}"
+                                                                @click="showAlive(1)">按热度</a></div>
+                <div style="display: inline; padding: 10px;"><a href="#" :class="{'aisAlive' : aliveNum == 2}"
+                                                                @click="showAlive(2)">按时间</a></div>
+            </div>
+            <br>
+            <p v-for="comment in commentList" style="margin-bottom: 30px;">
+
+                <span v-if="comment.like >= 5" style="color: red;">热门评论❤❤❤❤❤❤</span><br>
+                <span v-if="comment.hid != auction.createrid && auction.hid != comment.hid">用户</span>
+                <span v-else-if="comment.hid != auction.createrid && auction.hid == comment.hid"
+                      style="color: palevioletred;">当前最高竞价人</span>
+                <span v-else-if="comment.hid == auction.createrid" style="color: blueviolet;">发布人</span>
+                <span style="color: cadetblue;">{{comment.huiYuan.hname}}</span>
+                说：<br><span class="" style="margin-left: 110px;">{{comment.text}}</span>
+                <span class="" style="margin-left: 30px;">
+							<a style="text-decoration: none; color: seagreen;" href="#"
+                               @click="addLike(comment.cid)">赞许({{comment.like}})</a>
+							<a v-if="comment.hid == hid" style="text-decoration: none; color: darkred;" href="#"
+                               @click="deleteText(comment.cid)">删除</a>
+						</span>
+                <br>
+                <span style="color: darkgray;margin-left: 350px; font-size: 14px;">——{{comment.time}}</span>
+            </p>
+            <div id="index">
+                <span class="indexSpan">一共查询到{{total}}条记录 {{pages}}页</span>
+                <span class="indexSpan">当前是第{{pageNum}}页</span>
+                <span class="indexSpan"><button v-if="isFirstPage" disabled @click="front">上一页</button>
+							<button v-if="!isFirstPage" @click="front">上一页</button></span>
+
+                <span v-if="pages >= 9" v-for="count in pages">
+							<a v-if="count<=3" id="count" href="#" @click="getCommentList(count)"
+                               v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>
+						</span>
+                <span style="margin: 2px;" v-if="pages >= 9" v-for="count in 6">·</span>
+                <span v-if="pages >= 9" v-for="count in pages">
+							<a v-if="count > pages - 3" id="count" href="#" @click="getCommentList(count)"
+                               v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>
+						</span>
+                <span v-if="pages < 9" v-for="count in pages">
+							<a id="count" href="#" @click="getCommentList(count)" v-on:click="isLight(count)"
+                               :class="{'light':isLightNum==count}">{{count}}</a>
+						</span>
+                <span class="indexSpan">
+							<button v-if="isLastPage" disabled @click="next">下一页</button>
+							<button v-if="!isLastPage" @click="next">下一页</button>
+						</span>
+            </div>
+        </div>
+        <!-- 评论区end -->
+    </div>
+
+</div>
+
+
+<div id="footer-top">
+    <div class="footer-text">
+        © 小佟拍卖行
+    </div>
+</div>
+
+
+<script>
+    var vm = new Vue({
+        el: '#content',
+        data: {
+            num: 0,
+            hid: '',
+            aid: '',
+            auction: {
+                aid: "",
+                gpic: "",
+                gname: "",
+                tid: "",
+                bprice: "",
+                nprice: "",
+                increase: "",
+                abmoney: "",
+                stime: "",
+                etime: "",
+                abackup: "",
+                createrid: '',
+            },
+            //评论区列表
+            commentList: [],
+            myNprice: '',
+            //倒计时
+            time: '',
+            //websocket对象交给vue管理 这样才能在竞价结束时断开对服务器的连接
+            npriceWebsocket: '',
+            hidWebsocket: '',
+            textWebsocket: '',
+            //评论
+            text: '',
+            //翻页功能
+            total: 0, //总记录条数
+            pageNum: 1, //第几页
+            pages: 0, //有几页
+            isFirstPage: true,
+            isLastPage: false,
+            isLightNum: 1,
+            //高亮按热度和时间排序
+            aliveNum: 1
+        },
+        created: function () {
+            if (null == sessionStorage.getItem("hid")) {
+                alert("请先登录")
+                window.location.href = "login.html";
+            } else {
+                this.hid = sessionStorage.getItem("hid");
+            }
+            var str = location.search;
+            this.aid = str.substring(1);
+            axios.get("auction/getById?aid=" + this.aid)
+                .then(resp => {
+                    this.auction = resp.data.data;
+                    //得到宝物说明的index - lastIndex
+                    var index = this.auction.abackup.indexOf("宝物说明")
+                    var lastIndex = this.auction.abackup.lastIndexOf("-----")
+                    //切割出宝物说明
+                    this.auction.abackup = this.auction.abackup.substring(index + 5, lastIndex);
+                    //默认竞拍价
+                    this.changeMyNprice()
+                    //得到评论区
+                    this.getCommentList(1);
+                    //连接websocket服务器
+                    this.npriceWebsocket = new WebSocket('ws://localhost:8080/nprice/' + this.auction
+                        .aid);
+                    this.hidWebsocket = new WebSocket('ws://localhost:8080/hid/' + this.auction.aid);
+                    this.textWebsocket = new WebSocket('ws://localhost:8080/text/' + this.auction.aid);
+                    //实时订阅最新价格变动 改变竞价
+                    this.npriceWebsocket.onmessage = (evt) => {
+                        this.auction.nprice = evt.data;
+                        this.changeMyNprice()
+                    };
+                    //实时订阅最新竞拍者ID 改变竞拍者
+                    this.hidWebsocket.onmessage = (evt) => {
+                        this.auction.hid = evt.data;
+                        //如果当前竞拍者不是我
+                        if (this.auction.hid != this.hid) {
+                            $("#playAuctionMsg").text("");
+                        }
+                    };
+                    //实时订阅最新价格变动 改变竞价
+                    this.textWebsocket.onmessage = (evt) => {
+                        this.getCommentList(this.pageNum)
+                    };
+
+                })
+
+        },
+        methods: {
+            validMyNprice() {
+                if (this.myNprice == "") {
+                    $("#myNpriceMsg").text("")
+                    return;
+                }
+                if ($("#timeMsg").text() == "竞拍已结束，请关注其他宝物！") {
+                    $("#myNpriceMsg").text("")
+                    return;
+                }
+                if (this.myNprice - (this.auction.nprice == 0 ? this.auction.bprice : this.auction.nprice) -
+                    this.auction.increase < 0) {
+                    $("#myNpriceMsg").text("您的竞价必须大于当前竞价+增长价").css("color", "red")
+                    $("#playAuctionMsg").text("")
+                } else {
+                    $("#myNpriceMsg").text("")
+                }
+            },
+            playAuction() {
+                if ($("#timeMsg").text() == "竞拍已结束，请关注其他宝物！") {
+                    alert("竞拍已结束，请关注其他宝物！")
+                    return;
+                }
+                if (this.hid == this.auction.createrid) {
+                    alert("您不能参与自己发布的拍品交易！")
+                    return;
+                }
+                this.validMyNprice();
+                if ($("#myNpriceMsg").text() == "您的竞价必须大于当前竞价+增长价") {
+                    alert("您的竞价必须大于当前竞价+增长价")
+                    $("#playAuctionMsg").text("")
+                    return;
+                }
+                axios
+                    .get("auction/updateNprice?aid=" + this.aid + "&nprice=" + this.myNprice + "&hid=" + this
+                        .hid)
+                    .then(resp => {
+                        if (resp.data.code == false) {
+                            $("#playAuctionMsg").text("余额不足，请充值！").css("color", "red");
+                            return;
+                        }
+                        if (resp.data.isSuccess == false) {
+                            $("#playAuctionMsg").text("竞价失败，请重试！").css("color", "red");
+                        } else {
+                            $("#playAuctionMsg").text("您是当前最高竞价者，请关注！").css("color", "green");
+
+                        }
+
+                    })
+            },
+            changeMyNprice() {
+                this.myNprice = parseInt(this.auction.nprice) == 0 ? parseInt(this.auction.bprice) + parseInt(
+                    this.auction.increase) :
+                    parseInt(this.auction.nprice) + parseInt(this.auction.increase);
+            },
+            submitText() {
+                if (this.myTime == "竞拍已结束，请关注其他宝物！") {
+                    alert("拍卖结束，评论区关闭！")
+                    return;
+                }
+                axios.get("comment/insert?aid=" + this.auction.aid + "&hid=" + this.hid + "&text=" + this.text)
+                    .then(resp => {
+                        this.text = ""
+
+                    })
+
+            },
+            getCommentList(pageNum) {
+                axios.get("comment/getByAidInfo?aid=" + this.auction.aid + "&page=" + pageNum + "&aliveNum=" + this.aliveNum)
+                    .then(resp => {
+                        this.commentList = resp.data.list;
+                        this.total = resp.data.total;
+                        this.pageNum = pageNum;
+                        this.pages = resp.data.pages;
+                        this.isFirstPage = resp.data.isFirstPage;
+                        this.isLastPage = resp.data.isLastPage;
+                        if (this.pages >= 1 && this.commentList.length == 0) {
+                            this.getCommentList(this.pageNum - 1)
+                        }
+                    })
+            },
+            addLike(cid) {
+                axios.get("comment/updateLikeByCid?cid=" + cid)
+                    .then(resp => {
+
+                    })
+            },
+            deleteText(cid) {
+                axios.get("comment/deleteTextByCid?cid=" + cid)
+                    .then(resp => {
+
+                    })
+            },
+            isLight(i) {
+                this.isLightNum = i;
+            },
+            front() {
+                this.getCommentList(this.pageNum - 1);
+                this.isLightNum--;
+            },
+            next() {
+                this.getCommentList(this.pageNum + 1);
+                this.isLightNum++;
+            },
+            showAlive(aliveNum) {
+                this.aliveNum = aliveNum;
+                this.getCommentList(this.pageNum);
+            }
+        }
+    });
+
+    $(function () {
+        this.num = 0;
+        //页面加载后先执行一次 判断有没有拍卖结束
+        playTime()
+        //循环定时器
+        var timer = setInterval(playTime, 1000)
+
+        function playTime() {
+            let now = new Date();
+            let nowDate = {
+                year: (parseInt(now.getFullYear()) - 2020) * 31536000, //63072000
+                month: (parseInt(now.getMonth()) + 1) * 2592000, //31104000
+                date: parseInt(now.getDate()) * 86400, //2678400
+                hours: parseInt(now.getHours()) * 3600, //86400
+                minute: parseInt(now.getMinutes()) * 60, //3600
+                second: parseInt(now.getSeconds()) //60
+            }
+
+            let time = vm.auction.etime.split("-");
+            let etime = {
+                year: (parseInt(time[0]) - 2020) * 31536000,
+                month: parseInt(time[1]) * 2592000,
+                date: parseInt(time[2]) * 86400,
+                hours: 20 * 3600,
+                minute: 0,
+                second: 0
+            }
+
+            let nowDataSecond = nowDate.year + nowDate.month + nowDate.date + nowDate.hours + nowDate.minute +
+                nowDate.second;
+            let etimeSecond = etime.year + etime.month + etime.date + etime.hours + etime.minute + etime.second
+            var myTime = etimeSecond - nowDataSecond;
+
+            if (myTime <= 0) {
+                myTime = "竞拍已结束，请关注其他宝物！"
+                vm.myTime = myTime;
+                //断开与服务器的连接
+                vm.npriceWebsocket.close();
+                vm.hidWebsocket.close();
+                vm.textWebsocket.close();
+                //停止循环定时器
+                clearInterval(timer);
+                return;
+            }
+
+            var timeStr = '';
+            //大于一年
+            if (myTime / 31536000 >= 1) {
+                //得到年
+                let year = myTime / 31536000;
+                myTime -= parseInt(year) * 31536000;
+                timeStr += parseInt(year).toString() + "年 ";
+            }
+            if (myTime / 2592000 >= 1) {
+                //得到月
+                let month = myTime / 2592000;
+                myTime -= parseInt(month) * 2592000;
+                timeStr += parseInt(month).toString() + "月 ";
+            }
+            if (myTime / 86400 >= 1) {
+                //得到日
+                let date = myTime / 86400;
+                myTime -= parseInt(date) * 86400;
+                timeStr += parseInt(date).toString() + "日 ";
+            }
+
+            if (myTime / 3600 >= 1) {
+                //得到时
+                let hours = myTime / 3600;
+                myTime -= parseInt(hours) * 3600;
+                timeStr += parseInt(hours).toString() + "时 ";
+            }
+            if (myTime / 60 >= 1) {
+
+                //得到分
+                let minuten = myTime / 60;
+                myTime -= parseInt(minuten) * 60;
+                timeStr += parseInt(minuten).toString() + "分 ";
+            }
+            //得到秒
+            timeStr += myTime.toString() + "秒 ";
+
+            vm.time = "剩余时间：" + timeStr;
+        }
+    })
+</script>
+</body>
+</html>

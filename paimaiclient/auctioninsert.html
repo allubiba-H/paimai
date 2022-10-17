@@ -1,0 +1,251 @@
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>卓越--拍卖信息发布</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
+    <link href="JsCss/common.css" rel="stylesheet" media="screen" type="text/css"/>
+    <script type="text/javascript" src="JsCss/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="JsCss/jquery.min.js"></script>
+    <script type="text/javascript" src="JsCss/vue.min.js"></script>
+    <script type="text/javascript" src="JsCss/axios.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="JsCss/daojishi.js"></script>
+    <script type="text/javascript" src="JsCss/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="JsCss/jquery.iframe-transport.js"></script>
+    <script type="text/javascript" src="JsCss/jquery.fileupload.js"></script>
+    <script src="JsCss/index.js"></script>
+    <style type="text/css">
+        .myImage {
+            width: 150px;
+            height: 100px;
+            /* border: 1px solid gray; */
+            border-radius: 5px;
+            box-shadow: 1px 1px 15px 1px #6d8ab470;
+        }
+    </style>
+</head>
+
+<body>
+<div class="header">
+    <ul class="top-link">
+        <li class="title"><a href="#"
+                             onclick="this.style.behavior='url(#default#homepage)';this.setHomePage('huiyuaninsert.html');"
+                             title='设置本站为浏览器首页(启始页)'>设为首页</a></li>
+        <li class="pi"></li>
+        <li class="title"><a target=_top href="register.html">注册</a></li>
+        <li class="pi"></li>
+        <li class="title"><a href="login.html">登录</a></li>
+    </ul>
+
+    <div class="logo"><a href="index.html"><img src="images/logo.png" width="250" height="82"/></a></div>
+    <div class="menu">
+        <ul>
+            <li><a href="about.html">关于我们</a><span>about us</span></li>
+            <li class="active"><a href="auctioning.html">拍卖信息</a><span>Auction information</span></li>
+            <li><a href="auctioninsert.html">商品展示</a><span>Product showcase</span></li>
+            <li><a href="showData.html">个人信息</a><span>Personal information</span></li>
+            <li><a href="chargeMoney.html">资金管理</a><span>Money management</span></li>
+
+        </ul>
+    </div>
+</div>
+
+<div class="clr50"></div>
+<div class="zy_banner_bg">
+    <div class="zy_banner"></div>
+</div>
+
+
+<div class="zy_main" id="content">
+    <div class="Left_subMenu">
+        <div class="top_bg"></div>
+        <div class="c_bg">
+            <div class="title">拍卖信息</div>
+            <ul>
+                <li v-on:click="showinfo(0)" :class="{'activer':num==0}"><a href="auctioning.html">正在竞拍</a></li>
+                <li v-on:click="showinfo(1)" :class="{'activer':num==1}"><a href="showAuction.html">拍卖信息查询</a></li>
+                <li v-on:click="showinfo(2)" :class="{'activer':num==2}"><a href="auctioninsert.html">发布拍品</a></li>
+                <li v-on:click="showinfo(3)" :class="{'activer':num==3}"><a href="myOrder.html">我的订单</a></li>
+            </ul>
+        </div>
+        <div class="bottom_bg"></div>
+
+        <div class="ph">
+            <img src="images/ph.png" width="169" height="67"/>
+        </div>
+    </div>
+
+    <div class="zy_right">
+        <div class="position">当前位置：<a href="#">拍卖信息</a> > <a href="#">发布拍品</a></div>
+        <div class="zy_title">
+            <p>发布拍品<span>Auction information</span></p>
+        </div>
+        <br>
+
+        <!-- 拍品信息录入  begin-->
+        <div style="position:relative;left:200px;color: red">{{msg}}</div>
+        <div class="cz-guestbook">
+            <form action="" class="cz-form" method="post">
+                <p>商品名称：<input id="gname" name="gname" placeholder="请输入商品名称" v-model="auction.gname"
+                               class="cz-birds" style="width:443px"></p>
+                <p>商品类型：<select v-model="auction.tid" class="cz-birds" style="width:455px;height: 24px">
+                    <option value="">请选择</option>
+                    <option v-for="ty in ptypeslist" :value="ty.tid">{{ty.tname}}</option>
+                </select></p>
+                <p>起拍价格：<input id="bprice" type="number" name="bprice" v-model="auction.bprice" class="cz-birds"
+                               style="width:443px"></p>
+                <p>增长价格：<input id="increase" type="number" name="increase" v-model="auction.increase"
+                               class="cz-birds" style="width:443px"></p>
+                <p>保证金额：<input id="abmoney" type="number" name="abmoney" value="" v-model="auction.abmoney"
+                               class="cz-birds" style="width:443px"></p>
+                <p>开拍时间：<input type="date" @change="validTime" id="stime" name="stime" v-model="auction.stime"
+                               class="cz-birds"
+                               style="width:443px"></p>
+                <p>结束时间：<input type="date" @change="validTime" id="etime" name="etime" v-model="auction.etime"
+                               class="cz-birds"
+                               style="width:443px"></p><span id="timeMsg"></span><br>
+                <div id="fileDiv" style="width: 200px; height: 130px;" @click="clickFileDiv()"
+                     style="position: relative;">
+                    <div style="position: absolute;">图片上传:</div>
+                    <input style="display: none;" @change="showImg" type="file" id="myPic" name="pic"
+                           :data-url="baseurl+'auction/selectFile'"
+                           class="cz-birds" style="width:440px">
+                    <div id="imgDiv" style="position: absolute; left: 540px; ;">
+                        <img id="myImg" src="images/upload.png" class="myImage">
+                    </div>
+                </div>
+                <p>备注说明：<textarea id="abackup" name="abackup" v-model="auction.abackup" class="cz-birds"
+                                  style="width:443px"></textarea></p>
+                <div align="center">
+                    <input type="button" @click="addAuction" class="cz-gkbutton"/>
+                </div>
+            </form>
+        </div>
+        <!-- 拍品信息录入  end-->
+
+        <div class="clr10"></div>
+    </div>
+</div>
+
+<div id="footer-top">
+    <div class="footer-text">
+        © 小佟拍卖行
+    </div>
+</div>
+
+
+<script>
+    var vm = new Vue({
+        el: '#content',
+        data: {
+            num: 2,
+            hid: '',
+            auction: {
+                state: 1,
+                cflag: 0,
+                gzan: 0,
+                anum: 0,
+                gpic: "",
+                gname: "",
+                tid: "",
+                bprice: "",
+                increase: "",
+                abmoney: "",
+                stime: "",
+                etime: "",
+                abackup: ""
+
+            },
+            ptypeslist: '',
+            msg: '',
+            formData: new FormData()
+        },
+        created: function () {
+            if (null == sessionStorage.getItem("hid")) {
+                alert("请先登录")
+                window.location.href = "login.html";
+            } else {
+                this.hid = sessionStorage.getItem("hid");
+            }
+            //商品类型加载
+            axios.post('ptypes/selectList').then(result => {
+                console.log(result);
+                vm.ptypeslist = result.data.data;
+                vm.auction.tid = '';
+            });
+        },
+        methods: {
+            showinfo: function (i) {
+                this.num = i;
+            },
+            showImg(event) {
+                //如果直接获取value 是被加密后的路径
+                //通过事件对象获取事件源对象 再将其文件数组的第一个取出来 利用url.创建对象时的url取到地址
+                document.getElementById("myImg").src = URL.createObjectURL(event.target.files[0])
+                this.formData.set("file", event.target.files[0])
+            },
+            clickFileDiv() {
+                $("#myPic").click()
+            },
+            addAuction: function () {
+                if (this.auction.gname == "" || this.auction.bprice == "" || this.auction.increase == ""
+                    || this.auction.abmoney == "" || this.auction.stime == "" || this.auction.etime == "" || this.formData.get("file") == null) {
+                    alert("请输入完整拍品信息！")
+                    return;
+                }
+                this.validTime();
+                if ($("#timeMsg").html() == "开拍时期与结拍日期相差少于一天！") {
+                    alert("开拍时期与结拍日期相差少于一天！")
+                    return;
+                }
+                this.formData.set("gname", this.auction.gname);
+                this.formData.set("tid", this.auction.tid);
+                this.formData.set("bprice", this.auction.bprice);
+                this.formData.set("increase", this.auction.increase);
+                this.formData.set("abmoney", this.auction.abmoney);
+                this.formData.set("stime", this.auction.stime);
+                this.formData.set("etime", this.auction.etime);
+                this.formData.set("abackup", this.auction.abackup);
+                this.formData.set("gzan", this.auction.gzan);
+                this.formData.set("cflag", this.auction.cflag);
+                this.formData.set("state", this.auction.state);
+                this.formData.set("anum", this.auction.anum);
+                this.formData.set("createrid", sessionStorage.getItem("hid"));
+                axios({
+                    url: "auction/addAuction",
+                    data: this.formData, //在此处上传文件
+                    method: "post",
+                    async: false,
+                    headers: {
+                        'Content-Type': 'multipart/this.form-data',
+                    },
+                }).then((res) => {
+                    alert("发布成功，请等待审核结果！")
+                    this.formData = new FormData();
+                    location.reload();
+                    //   this.$router.push("angjia?flag=0");
+                }).catch(function (res) {
+                    //   alert(res.data);
+                })
+            },
+            validTime() {
+                if (this.auction.stime == "" || this.auction.etime == "") {
+                    return;
+                }
+                if (this.auction.etime <= this.auction.stime) {
+                    $("#timeMsg").html("开拍时期与结拍日期相差少于一天！").css("color", "red");
+                } else {
+                    $("#timeMsg").html("日期合法！").css("color", "green");
+                }
+            }
+
+        }
+    });
+    //页面加载
+    $(function () {
+        vm.num = 2;
+    })
+</script>
+</body>
+</html>

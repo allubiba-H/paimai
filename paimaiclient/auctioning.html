@@ -1,0 +1,275 @@
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>卓越--拍卖信息发布</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
+    <link href="JsCss/common.css" rel="stylesheet" media="screen" type="text/css"/>
+    <script type="text/javascript" src="JsCss/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="JsCss/jquery.min.js"></script>
+    <script type="text/javascript" src="JsCss/vue.min.js"></script>
+    <script type="text/javascript" src="JsCss/axios.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="JsCss/daojishi.js"></script>
+    <script type="text/javascript" src="JsCss/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="JsCss/jquery.iframe-transport.js"></script>
+    <script type="text/javascript" src="JsCss/jquery.fileupload.js"></script>
+    <script src="JsCss/index.js"></script>
+    <style type="text/css">
+        #index a {
+            margin: 5px 10px;
+            text-decoration: none;
+        }
+
+        .indexSpan {
+            margin: 10px;
+        }
+
+        .cz-con-text > span {
+            margin-right: 20px;
+        }
+
+        .light {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+<div class="header">
+    <ul class="top-link">
+        <li class="title"><a href="#"
+                             onclick="this.style.behavior='url(#default#homepage)';this.setHomePage('huiyuaninsert.html');"
+                             title='设置本站为浏览器首页(启始页)'>设为首页</a></li>
+        <li class="pi"></li>
+        <li class="title"><a target=_top href="register.html">注册</a></li>
+        <li class="pi"></li>
+        <li class="title"><a href="login.html">登录</a></li>
+    </ul>
+
+    <div class="logo"><a href="index.html"><img src="images/logo.png" width="250" height="82"/></a></div>
+    <div class="menu">
+        <ul>
+            <li><a href="about.html">关于我们</a><span>about us</span></li>
+            <li class="active"><a href="auction.html">拍卖信息</a><span>Auction information</span></li>
+            <li><a href="product.html">商品展示</a><span>Product showcase</span></li>
+            <li><a href="showData.html">个人信息</a><span>Personal information</span></li>
+            <li><a href="calligraphy.html">资金管理</a><span>Money management</span></li>
+
+        </ul>
+    </div>
+</div>
+
+<div class="clr50"></div>
+<div class="zy_banner_bg">
+    <div class="zy_banner"></div>
+</div>
+
+
+<div class="zy_main" id="content">
+    <div class="Left_subMenu">
+        <div class="top_bg"></div>
+        <div class="c_bg">
+            <div class="title">拍卖信息</div>
+            <ul>
+                <li @click="showinfo(0)" :class="{'activer':num==0}"><a href="auctioning.html">正在竞拍</a></li>
+                <li @click="showinfo(1)" :class="{'activer':num==1}"><a href="showAuction.html">拍卖信息查询</a></li>
+                <li @click="showinfo(2)" :class="{'activer':num==2}"><a href="auctioninsert.html">发布拍品</a></li>
+                <li @click="showinfo(3)" :class="{'activer':num==3}"><a href="myOrder.html">我的订单</a></li>
+            </ul>
+        </div>
+        <div class="bottom_bg"></div>
+
+        <div class="ph">
+            <img src="images/ph.png" width="169" height="67"/>
+        </div>
+    </div>
+
+    <div class="zy_right">
+        <div class="position">当前位置：<a href="#">拍卖信息</a> > <a href="#">发布拍品</a></div>
+        <div class="zy_title">
+            <p>发布拍品<span>Auction information</span></p>
+        </div>
+        <br>
+
+        <div>
+            <select id="tid" class="cz-birds" style="width:200px;height: 24px">
+                <option value="0">请选择</option>
+                <option v-for="ty in ptypeslist" :value="ty.tid">{{ty.tname}}</option>
+            </select>
+            <input type="text" id="gname" placeholder="请输入商品名称..."/>
+            <input type="button" name="" value="查询" @click="initauctionListByTidAndGname(1)"
+                   style="width: 75px;"/>
+            <input type="button" name="" value="重置" @click="reset()" style="width: 75px;"/>
+        </div>
+        <div style="margin-top: 10px;">
+            <div @click="todetail(item.aid)" v-for="(item,index) in auctionList"
+                 style="width: 170px; float: left; margin-right: 20px; cursor: pointer;">
+                <div>
+                    <img :src="'http://localhost:9999/upload/img/'+item.gpic" style="width:170px;height:170px"/>
+                </div>
+                <div style="text-align: center;">
+                    宝物名称：{{item.gname}}
+                </div>
+
+                <div style="text-align: center;" v-if="item.nprice == null">
+                    当前竞价：<span style="color: red;">￥{{item.bprice}}</span>
+
+                </div>
+                <div style="text-align: center;" v-else-if="item.nprice != null">
+                    当前竞价：<span style="color: red;">￥{{item.nprice}}</span>
+
+                </div>
+            </div>
+        </div>
+        <div id="index" style="text-align: center;float: left;">
+            <span class="indexSpan">一共查询到{{total}}条记录 {{pages}}页</span>
+            <span class="indexSpan">当前是第{{pageNum}}页</span>
+            <span class="indexSpan"><button v-if="isFirstPage" disabled @click="front">上一页</button>
+						<button v-if="!isFirstPage" @click="front">上一页</button></span>
+
+            <span v-if="pages >= 9" v-for="count in pages">
+						<a v-if="count<=3" id="count" href="#" @click="toPage(count)" v-on:click="isLight(count)"
+                           :class="{'light':isLightNum==count}">{{count}}</a>
+					</span>
+            <span style="margin: 2px;" v-if="pages >= 9" v-for="count in 6">·</span>
+            <span v-if="pages >= 9" v-for="count in pages">
+						<a v-if="count > pages - 3" id="count" href="#" @click="toPage(count)"
+                           v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>
+					</span>
+            <span v-if="pages < 9" v-for="count in pages">
+						<a id="count" href="#" @click="toPage(count)" v-on:click="isLight(count)"
+                           :class="{'light':isLightNum==count}">{{count}}</a>
+					</span>
+            <span class="indexSpan">
+						<button v-if="isLastPage" disabled @click="next">下一页</button>
+						<button v-if="!isLastPage" @click="next">下一页</button>
+					</span>
+        </div>
+
+        <div class="clr10"></div>
+    </div>
+</div>
+
+
+<div id="footer-top">
+    <div class="footer-text">
+        © 小佟拍卖行
+    </div>
+</div>
+
+<style>
+
+</style>
+<script>
+    var vm = new Vue({
+        el: '#content',
+        data: {
+            num: 0,
+            auctionList: [],
+            ptypeslist: [],
+            hid: '',
+            total: 0, //总记录条数
+            pageNum: 1, //第几页
+            pages: 0, //有几页
+            isFirstPage: true,
+            isLastPage: false,
+            isLightNum: 1,
+            //根据类型查询 不能被v-model哦 不然翻页的时候就改变条件了
+            tid: 0,
+            //根据商品名称，模糊查询 不能被v-model哦 不然翻页的时候就改变条件了
+            gname: '',
+
+        },
+        created() {
+            if (null == sessionStorage.getItem("hid")) {
+                alert("请先登录")
+                window.location.href = "login.html";
+            } else {
+                this.hid = sessionStorage.getItem("hid");
+                this.initauctionList(1);
+                //商品类型加载
+                axios.post('ptypes/selectList').then(result => {
+                    console.log(result)
+                    this.ptypeslist = result.data.data;
+                });
+            }
+        },
+        methods: {
+            showinfo: function (i) {
+                this.num = i;
+            },
+            //页面加载后的默认查询方法
+            initauctionList(pageNum) {
+                axios.get('auction/getAllByStateInfo?pageNum=' + pageNum + '&state=' + 4).then(result => {
+                    let data = result.data.data;
+                    this.auctionList = data.records;
+                    this.total = data.total;
+                    this.pageNum = pageNum;
+                    this.pages = data.pages;
+                });
+            },
+            //点击查询用的查询方法，在这里可以改变this.ganme和this.tid 其他地方都不能改变
+            initauctionListByTidAndGname(pageNum) {
+                this.tid = $("#tid").val();
+                this.gname = $("#gname").val();
+                axios.get('auction/getAllByStateAndTidAndGnameInfo?pageNum=' + pageNum + '&state=' + 4 +
+                    "&tid=" + this.tid + "&gname=" + this.gname).then(result => {
+                    console.log(result.data.data)
+                    let data = result.data.data;
+                    this.auctionList = data.records;
+                    this.total = data.total;
+                    this.pageNum = pageNum;
+                    this.pages = data.pages;
+                    this.isFirstPage = result.data.isFirstPage;
+                    this.isLastPage = result.data.isLastPage;
+                });
+            },
+            //翻页时用的查询 不能改变this.gname和this.tid
+            toPage(pageNum) {
+                axios.get('auction/getAllByStateAndTidAndGnameInfo?pageNum=' + pageNum + '&state=' + 4 +
+                    "&tid=" + this.tid + "&gname=" + this.gname).then(result => {
+                    let data = result.data.data;
+                    this.auctionList = data.records;
+                    this.total = data.total;
+                    this.pageNum = pageNum;
+                    this.pages = data.pages;
+                    this.isFirstPage = result.data.isFirstPage;
+                    this.isLastPage = result.data.isLastPage;
+                });
+            },
+            isLight(i) {
+                this.isLightNum = i;
+            },
+            front() {
+                this.toPage(this.pageNum - 1);
+                this.isLightNum--;
+            },
+            next() {
+                this.toPage(this.pageNum + 1);
+                this.isLightNum++;
+            },
+            reset() {
+                $("#gname").val("");
+                $("#tid").val("0");
+                this.tid = 0;
+                this.gname = "";
+            },
+            //跳转详情页
+            todetail(aid) {
+                //为该拍品增加热度
+                axios.get("auction/like?aid=" + aid)
+                window.location.href = 'auction.html?' + aid;
+            }
+        }
+    });
+    //页面加载
+    $(function () {
+        vm.num = 0;
+
+
+    })
+
+</script>
+</body>
+</html>

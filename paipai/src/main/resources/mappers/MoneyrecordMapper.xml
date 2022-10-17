@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.paipai.paipai.mapper.MoneyrecordMapper">
+
+    <select id="getByTimeOrType" resultType="moneyrecord" parameterType="java.util.Map">
+        select * from moneyrecord where hid = #{hid}
+        <if test="stime != null and stime != ''">
+            and cjtime &gt;= #{stime}
+        </if>
+        <if test="etime != null and etime != ''">
+            and cjtime &lt;= #{etime}
+        </if>
+        <if test="list != null and list != ''">
+            <foreach collection="list" item="list" open="and mtype in (" close=")" separator=",">
+                #{list}
+            </foreach>
+        </if>
+        limit #{page},#{pageSize}
+    </select>
+</mapper>
