@@ -13,4 +13,7 @@ import com.paipai.paipai.entity.Auction;
  */
 public interface IAuctionService extends IService<Auction> {
 
+    public void auctionning(Auction auction);
+
+
 }

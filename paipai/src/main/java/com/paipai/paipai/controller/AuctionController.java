@@ -181,5 +181,16 @@ public class AuctionController {
         Auction auction = auctionService.getById(aid);
         return R.success(auction);
     }
+
+    @GetMapping("updateNprice")
+    public R updateNprice(Auction auction) {
+        Huiyuan huiyuan = huiyuanService.getById(auction.getHid());
+        Auction auction1 = auctionService.getById(auction.getAid());
+
+        if (huiyuan.getHyue() < auction1.getAbmoney()) {
+            return R.success("余额不足，请充值再竞拍！");
+        }
+        return R.success("");
+    }
 }
 
