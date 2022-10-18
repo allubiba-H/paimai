@@ -183,14 +183,15 @@ public class AuctionController {
     }
 
     @GetMapping("updateNprice")
-    public R updateNprice(Auction auction) {
+    public R updateNprice(Auction auction) throws Exception {
         Huiyuan huiyuan = huiyuanService.getById(auction.getHid());
         Auction auction1 = auctionService.getById(auction.getAid());
 
         if (huiyuan.getHyue() < auction1.getAbmoney()) {
             return R.success("余额不足，请充值再竞拍！");
         }
-        return R.success("");
+        auctionService.auctionning(auction);
+        return R.success("竞拍成功");
     }
 }
 

@@ -122,7 +122,7 @@
             <div style="padding-top:25px;float: left;">
                 <div>
                     <!-- <img v-bind:src="picpath" width="625" height="328" /> -->
-                    <img :src="'http://localhost:9999/upload/img/'+auction.gpic" width="400" height="350"/>
+                    <img :src="'http://localhost:9999/upload/img/'+auctions.gpic" width="400" height="350"/>
                 </div>
                 <div style="height: 20px">&nbsp;</div>
                 <div style="height: 20px;clear: both;">&nbsp;</div>
@@ -134,25 +134,25 @@
                     <span id="timeMsg" style="color: green; font-size: 18px;">{{time}}</span>
                 </div>
                 <p><span>当前竞拍价：</span>
-                    <span v-if="auction.nprice != 0"
-                          style="color: red;font-size: 25px">{{auction.nprice}}</span>
-                    <span v-else-if="auction.nprice == 0"
-                          style="color: red;font-size: 25px">{{auction.bprice}}</span>
+                    <span v-if="auctions.nprice != 0"
+                          style="color: red;font-size: 25px">{{auctions.nprice}}</span>
+                    <span v-else-if="auctions.nprice == 0"
+                          style="color: red;font-size: 25px">{{auctions.bprice}}</span>
                 </p>
                 <p><span>当前竞拍者：</span>
-                    <span style="color: red;font-size: 20px">{{auction.hid}}</span>
+                    <span style="color: red;font-size: 20px">{{auctions.hid}}</span>
                 </p>
                 <br>
-                <p><span>宝物名称：</span>{{auction.gname}}</p>
-                <p><span>起拍价：</span>¥{{auction.bprice}}</p>
-                <p><span>增长价：</span>¥{{auction.increase}}</p>
-                <p><span>保证金：</span>¥{{auction.abmoney}}</p>
-                <p><span>开拍日期：</span>{{auction.stime}} 08:00</p>
-                <p><span>结拍日期：</span>{{auction.etime}} 20:00</p>
-                <p><span>简介：</span>{{auction.abackup}}</p>
+                <p><span>宝物名称：</span>{{auctions.gname}}</p>
+                <p><span>起拍价：</span>¥{{auctions.bprice}}</p>
+                <p><span>增长价：</span>¥{{auctions.increase}}</p>
+                <p><span>保证金：</span>¥{{auctions.abmoney}}</p>
+                <p><span>开拍日期：</span>{{auctions.stime}} 08:00</p>
+                <p><span>结拍日期：</span>{{auctions.etime}} 20:00</p>
+                <p><span>简介：</span>{{auctions.abackup}}</p>
                 <br>
                 <br>
-                <p>请输入竞拍价格：<input @blur="validMyNprice" @mouseout="validMyNprice" v-model="myNprice"
+                <p>请输入竞拍价格：<input @blur="validMyNprice" @mouseout="validMyNprice" v-model="auction.myNprice"
                                   type="number" id="price" name="price" style="width: 120px"/>
                     <span id="myNpriceMsg">
 
@@ -174,65 +174,65 @@
         <div class="clr10"></div>
 
         <!-- 评论区begin -->
-        <div id="commentText" style="margin-top: 50px;">
+<!--        <div id="commentText" style="margin-top: 50px;">-->
 
-            <form>
-                <input v-model="text" type="text" placeholder=" 在此处发布你的评论"
-                       style="outline: none; width: 600px;height: 40px; background-color: white; border: 1.5px #A44239 solid; border-radius: 5px;">
-                <input @click="submitText()" type="button" value="评论"
-                       style="border-radius: 15px; width: 80px; height: 45px; color: white; border: none; background-color: #A44239; font-weight: bolder; margin-top: 2px;">
-            </form>
-            <br>
+<!--            <form>-->
+<!--                <input v-model="text" type="text" placeholder=" 在此处发布你的评论"-->
+<!--                       style="outline: none; width: 600px;height: 40px; background-color: white; border: 1.5px #A44239 solid; border-radius: 5px;">-->
+<!--                <input @click="submitText()" type="button" value="评论"-->
+<!--                       style="border-radius: 15px; width: 80px; height: 45px; color: white; border: none; background-color: #A44239; font-weight: bolder; margin-top: 2px;">-->
+<!--            </form>-->
+<!--            <br>-->
             <!-- 排序区 按热度/按时间 -->
-            <div style="width: 145px; padding-bottom: 20px;">
-                <div style="display: inline; padding: 10px;"><a href="#" :class="{'aisAlive' : aliveNum == 1}"
-                                                                @click="showAlive(1)">按热度</a></div>
-                <div style="display: inline; padding: 10px;"><a href="#" :class="{'aisAlive' : aliveNum == 2}"
-                                                                @click="showAlive(2)">按时间</a></div>
-            </div>
-            <br>
-            <p v-for="comment in commentList" style="margin-bottom: 30px;">
+<!--            <div style="width: 145px; padding-bottom: 20px;">-->
+<!--                <div style="display: inline; padding: 10px;"><a href="#" :class="{'aisAlive' : aliveNum == 1}"-->
+<!--                                                                @click="showAlive(1)">按热度</a></div>-->
+<!--                <div style="display: inline; padding: 10px;"><a href="#" :class="{'aisAlive' : aliveNum == 2}"-->
+<!--                                                                @click="showAlive(2)">按时间</a></div>-->
+<!--            </div>-->
+<!--            <br>-->
+<!--            <p v-for="comment in commentList" style="margin-bottom: 30px;">-->
 
-                <span v-if="comment.like >= 5" style="color: red;">热门评论❤❤❤❤❤❤</span><br>
-                <span v-if="comment.hid != auction.createrid && auction.hid != comment.hid">用户</span>
-                <span v-else-if="comment.hid != auction.createrid && auction.hid == comment.hid"
-                      style="color: palevioletred;">当前最高竞价人</span>
-                <span v-else-if="comment.hid == auction.createrid" style="color: blueviolet;">发布人</span>
-                <span style="color: cadetblue;">{{comment.huiYuan.hname}}</span>
-                说：<br><span class="" style="margin-left: 110px;">{{comment.text}}</span>
-                <span class="" style="margin-left: 30px;">
-							<a style="text-decoration: none; color: seagreen;" href="#"
-                               @click="addLike(comment.cid)">赞许({{comment.like}})</a>
-							<a v-if="comment.hid == hid" style="text-decoration: none; color: darkred;" href="#"
-                               @click="deleteText(comment.cid)">删除</a>
-						</span>
-                <br>
-                <span style="color: darkgray;margin-left: 350px; font-size: 14px;">——{{comment.time}}</span>
-            </p>
-            <div id="index">
-                <span class="indexSpan">一共查询到{{total}}条记录 {{pages}}页</span>
-                <span class="indexSpan">当前是第{{pageNum}}页</span>
-                <span class="indexSpan"><button v-if="isFirstPage" disabled @click="front">上一页</button>
-							<button v-if="!isFirstPage" @click="front">上一页</button></span>
+<!--                <span v-if="comment.like >= 5" style="color: red;">热门评论❤❤❤❤❤❤</span><br>-->
+<!--                <span v-if="comment.hid != auction.createrid && auction.hid != comment.hid">用户</span>-->
+<!--                <span v-else-if="comment.hid != auction.createrid && auction.hid == comment.hid"-->
+<!--                      style="color: palevioletred;">当前最高竞价人</span>-->
+<!--                <span v-else-if="comment.hid == auction.createrid" style="color: blueviolet;">发布人</span>-->
+<!--                <span style="color: cadetblue;">{{comment.huiYuan.hname}}</span>-->
+<!--                说：<br><span class="" style="margin-left: 110px;">{{comment.text}}</span>-->
+<!--                <span class="" style="margin-left: 30px;">-->
+<!--							<a style="text-decoration: none; color: seagreen;" href="#"-->
+<!--                               @click="addLike(comment.cid)">赞许({{comment.like}})</a>-->
+<!--							<a v-if="comment.hid == hid" style="text-decoration: none; color: darkred;" href="#"-->
+<!--                               @click="deleteText(comment.cid)">删除</a>-->
+<!--						</span>-->
+<!--                <br>-->
+<!--                <span style="color: darkgray;margin-left: 350px; font-size: 14px;">——{{comment.time}}</span>-->
+<!--            </p>-->
+<!--            <div id="index">-->
+<!--                <span class="indexSpan">一共查询到{{total}}条记录 {{pages}}页</span>-->
+<!--                <span class="indexSpan">当前是第{{pageNum}}页</span>-->
+<!--                <span class="indexSpan"><button v-if="isFirstPage" disabled @click="front">上一页</button>-->
+<!--							<button v-if="!isFirstPage" @click="front">上一页</button></span>-->
 
-                <span v-if="pages >= 9" v-for="count in pages">
-							<a v-if="count<=3" id="count" href="#" @click="getCommentList(count)"
-                               v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>
-						</span>
-                <span style="margin: 2px;" v-if="pages >= 9" v-for="count in 6">·</span>
-                <span v-if="pages >= 9" v-for="count in pages">
-							<a v-if="count > pages - 3" id="count" href="#" @click="getCommentList(count)"
-                               v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>
-						</span>
-                <span v-if="pages < 9" v-for="count in pages">
-							<a id="count" href="#" @click="getCommentList(count)" v-on:click="isLight(count)"
-                               :class="{'light':isLightNum==count}">{{count}}</a>
-						</span>
-                <span class="indexSpan">
-							<button v-if="isLastPage" disabled @click="next">下一页</button>
-							<button v-if="!isLastPage" @click="next">下一页</button>
-						</span>
-            </div>
+<!--                <span v-if="pages >= 9" v-for="count in pages">-->
+<!--							<a v-if="count<=3" id="count" href="#" @click="getCommentList(count)"-->
+<!--                               v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>-->
+<!--						</span>-->
+<!--                <span style="margin: 2px;" v-if="pages >= 9" v-for="count in 6">·</span>-->
+<!--                <span v-if="pages >= 9" v-for="count in pages">-->
+<!--							<a v-if="count > pages - 3" id="count" href="#" @click="getCommentList(count)"-->
+<!--                               v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>-->
+<!--						</span>-->
+<!--                <span v-if="pages < 9" v-for="count in pages">-->
+<!--							<a id="count" href="#" @click="getCommentList(count)" v-on:click="isLight(count)"-->
+<!--                               :class="{'light':isLightNum==count}">{{count}}</a>-->
+<!--						</span>-->
+<!--                <span class="indexSpan">-->
+<!--							<button v-if="isLastPage" disabled @click="next">下一页</button>-->
+<!--							<button v-if="!isLastPage" @click="next">下一页</button>-->
+<!--						</span>-->
+<!--            </div>-->
         </div>
         <!-- 评论区end -->
     </div>
@@ -251,10 +251,13 @@
     var vm = new Vue({
         el: '#content',
         data: {
-            num: 0,
-            hid: '',
-            aid: '',
-            auction: {
+            num:0,
+            auction:{
+                hid: sessionStorage.getItem("hid"),
+                aid: '',
+                myNprice: '',
+            },
+            auctions: {
                 aid: "",
                 gpic: "",
                 gname: "",
@@ -268,18 +271,7 @@
                 abackup: "",
                 createrid: '',
             },
-            //评论区列表
-            commentList: [],
-            myNprice: '',
-            //倒计时
-            time: '',
-            //websocket对象交给vue管理 这样才能在竞价结束时断开对服务器的连接
-            npriceWebsocket: '',
-            hidWebsocket: '',
-            textWebsocket: '',
-            //评论
-            text: '',
-            //翻页功能
+            time:'',
             total: 0, //总记录条数
             pageNum: 1, //第几页
             pages: 0, //有几页
@@ -294,37 +286,37 @@
                 alert("请先登录")
                 window.location.href = "login.html";
             } else {
-                this.hid = sessionStorage.getItem("hid");
+                this.auction.hid = sessionStorage.getItem("hid");
             }
             var str = location.search;
             this.aid = str.substring(1);
             axios.get("auction/getById?aid=" + this.aid)
                 .then(resp => {
-                    this.auction = resp.data.data;
+                    this.auctions = resp.data.data;
                     //得到宝物说明的index - lastIndex
-                    var index = this.auction.abackup.indexOf("宝物说明")
-                    var lastIndex = this.auction.abackup.lastIndexOf("-----")
+                    var index = this.auctions.abackup.indexOf("宝物说明")
+                    var lastIndex = this.auctions.abackup.lastIndexOf("-----")
                     //切割出宝物说明
-                    this.auction.abackup = this.auction.abackup.substring(index + 5, lastIndex);
+                    this.auctions.abackup = this.auctions.abackup.substring(index + 5, lastIndex);
                     //默认竞拍价
                     this.changeMyNprice()
                     //得到评论区
                     this.getCommentList(1);
                     //连接websocket服务器
-                    this.npriceWebsocket = new WebSocket('ws://localhost:8080/nprice/' + this.auction
+                    this.npriceWebsocket = new WebSocket('ws://localhost:8080/nprice/' + this.auctions
                         .aid);
-                    this.hidWebsocket = new WebSocket('ws://localhost:8080/hid/' + this.auction.aid);
-                    this.textWebsocket = new WebSocket('ws://localhost:8080/text/' + this.auction.aid);
+                    this.hidWebsocket = new WebSocket('ws://localhost:8080/hid/' + this.auctions.aid);
+                    this.textWebsocket = new WebSocket('ws://localhost:8080/text/' + this.auctions.aid);
                     //实时订阅最新价格变动 改变竞价
                     this.npriceWebsocket.onmessage = (evt) => {
-                        this.auction.nprice = evt.data;
+                        this.auctions.nprice = evt.data;
                         this.changeMyNprice()
                     };
                     //实时订阅最新竞拍者ID 改变竞拍者
                     this.hidWebsocket.onmessage = (evt) => {
-                        this.auction.hid = evt.data;
+                        this.auctions.hid = evt.data;
                         //如果当前竞拍者不是我
-                        if (this.auction.hid != this.hid) {
+                        if (this.auctions.hid != this.hid) {
                             $("#playAuctionMsg").text("");
                         }
                     };
@@ -338,7 +330,7 @@
         },
         methods: {
             validMyNprice() {
-                if (this.myNprice == "") {
+                if (this.auction.myNprice == "") {
                     $("#myNpriceMsg").text("")
                     return;
                 }
@@ -346,7 +338,7 @@
                     $("#myNpriceMsg").text("")
                     return;
                 }
-                if (this.myNprice - (this.auction.nprice == 0 ? this.auction.bprice : this.auction.nprice) -
+                if (this.auction.myNprice- (this.auction.nprice == 0 ? this.auction.bprice : this.auction.nprice) -
                     this.auction.increase < 0) {
                     $("#myNpriceMsg").text("您的竞价必须大于当前竞价+增长价").css("color", "red")
                     $("#playAuctionMsg").text("")
@@ -359,7 +351,7 @@
                     alert("竞拍已结束，请关注其他宝物！")
                     return;
                 }
-                if (this.hid == this.auction.createrid) {
+                if (this.auction.hid == this.auctions.createrid) {
                     alert("您不能参与自己发布的拍品交易！")
                     return;
                 }
@@ -370,8 +362,8 @@
                     return;
                 }
                 axios
-                    .get("auction/updateNprice?aid=" + this.aid + "&nprice=" + this.myNprice + "&hid=" + this
-                        .hid)
+                    .get("auction/updateNprice?aid=" + this.auctions.aid + "&nprice=" + this.auction.myNprice + "&hid=" + this
+                        .auction.hid)
                     .then(resp => {
                         if (resp.data.code == false) {
                             $("#playAuctionMsg").text("余额不足，请充值！").css("color", "red");
@@ -387,7 +379,7 @@
                     })
             },
             changeMyNprice() {
-                this.myNprice = parseInt(this.auction.nprice) == 0 ? parseInt(this.auction.bprice) + parseInt(
+                this.auction.myNprice = parseInt(this.auction.nprice) == 0 ? parseInt(this.auction.bprice) + parseInt(
                     this.auction.increase) :
                     parseInt(this.auction.nprice) + parseInt(this.auction.increase);
             },
