@@ -7,6 +7,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 @Configuration
 public class MyConfig implements WebMvcConfigurer {
@@ -29,5 +30,9 @@ public class MyConfig implements WebMvcConfigurer {
 //        registry.addInterceptor(new LoginInterception())
 //                .addPathPatterns("/**")
 //                .excludePathPatterns("/paipai/admin/login", "/paipai/huiyuan/login/**");
+    }
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter () {
+       return new ServerEndpointExporter();
     }
 }
