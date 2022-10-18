@@ -21,6 +21,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         this.strictInsertFill(metaObject, "createTime", Date.class, new Date());
         this.strictInsertFill(metaObject, "cjtime", String.class, nowTime);
         this.strictInsertFill(metaObject, "createtime", String.class, nowTime);
+        this.strictInsertFill(metaObject, "jptime", String.class, nowTime);
     }
 
     @Override

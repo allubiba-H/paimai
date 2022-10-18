@@ -1,6 +1,8 @@
 package com.paipai.paipai.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,6 +32,7 @@ public class Jingpai implements Serializable {
 
     private Integer jprice;
 
+    @TableField(value = "jptime",fill = FieldFill.INSERT)
     private String jptime;
 
     private String hid;

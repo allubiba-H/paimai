@@ -122,7 +122,7 @@
             <div style="padding-top:25px;float: left;">
                 <div>
                     <!-- <img v-bind:src="picpath" width="625" height="328" /> -->
-                    <img :src="'http://localhost:9999/upload/img/'+auctions.gpic" width="400" height="350"/>
+                    <img :src="'http://localhost:9999/upload/img/'+auctionInfo.gpic" width="400" height="350"/>
                 </div>
                 <div style="height: 20px">&nbsp;</div>
                 <div style="height: 20px;clear: both;">&nbsp;</div>
@@ -134,25 +134,25 @@
                     <span id="timeMsg" style="color: green; font-size: 18px;">{{time}}</span>
                 </div>
                 <p><span>当前竞拍价：</span>
-                    <span v-if="auctions.nprice != 0"
-                          style="color: red;font-size: 25px">{{auctions.nprice}}</span>
-                    <span v-else-if="auctions.nprice == 0"
-                          style="color: red;font-size: 25px">{{auctions.bprice}}</span>
+                    <span v-if="auctionInfo.nprice != 0"
+                          style="color: red;font-size: 25px">{{auctionInfo.nprice}}</span>
+                    <span v-else-if="auctionInfo.nprice == 0"
+                          style="color: red;font-size: 25px">{{auctionInfo.bprice}}</span>
                 </p>
                 <p><span>当前竞拍者：</span>
-                    <span style="color: red;font-size: 20px">{{auctions.hid}}</span>
+                    <span style="color: red;font-size: 20px">{{auctionInfo.hid}}</span>
                 </p>
                 <br>
-                <p><span>宝物名称：</span>{{auctions.gname}}</p>
-                <p><span>起拍价：</span>¥{{auctions.bprice}}</p>
-                <p><span>增长价：</span>¥{{auctions.increase}}</p>
-                <p><span>保证金：</span>¥{{auctions.abmoney}}</p>
-                <p><span>开拍日期：</span>{{auctions.stime}} 08:00</p>
-                <p><span>结拍日期：</span>{{auctions.etime}} 20:00</p>
-                <p><span>简介：</span>{{auctions.abackup}}</p>
+                <p><span>宝物名称：</span>{{auctionInfo.gname}}</p>
+                <p><span>起拍价：</span>¥{{auctionInfo.bprice}}</p>
+                <p><span>增长价：</span>¥{{auctionInfo.increase}}</p>
+                <p><span>保证金：</span>¥{{auctionInfo.abmoney}}</p>
+                <p><span>开拍日期：</span>{{auctionInfo.stime}} 08:00</p>
+                <p><span>结拍日期：</span>{{auctionInfo.etime}} 20:00</p>
+                <p><span>简介：</span>{{auctionInfo.abackup}}</p>
                 <br>
                 <br>
-                <p>请输入竞拍价格：<input @blur="validMyNprice" @mouseout="validMyNprice" v-model="auction.myNprice"
+                <p>请输入竞拍价格：<input @blur="validMyNprice" @mouseout="validMyNprice" v-model.number="auction.nprice"
                                   type="number" id="price" name="price" style="width: 120px"/>
                     <span id="myNpriceMsg">
 
@@ -253,11 +253,11 @@
         data: {
             num:0,
             auction:{
-                hid: sessionStorage.getItem("hid"),
+                hid: '',
                 aid: '',
-                myNprice: '',
+                nprice: '',
             },
-            auctions: {
+            auctionInfo: {
                 aid: "",
                 gpic: "",
                 gname: "",
@@ -289,48 +289,15 @@
                 this.auction.hid = sessionStorage.getItem("hid");
             }
             var str = location.search;
-            this.aid = str.substring(1);
-            axios.get("auction/getById?aid=" + this.aid)
+            this.auction.aid = Number(str.substring(1));
+            axios.get("auction/getById?aid=" + this.auction.aid)
                 .then(resp => {
-                    this.auctions = resp.data.data;
-                    //得到宝物说明的index - lastIndex
-                    var index = this.auctions.abackup.indexOf("宝物说明")
-                    var lastIndex = this.auctions.abackup.lastIndexOf("-----")
-                    //切割出宝物说明
-                    this.auctions.abackup = this.auctions.abackup.substring(index + 5, lastIndex);
-                    //默认竞拍价
-                    this.changeMyNprice()
-                    //得到评论区
-                    this.getCommentList(1);
-                    //连接websocket服务器
-                    this.npriceWebsocket = new WebSocket('ws://localhost:8080/nprice/' + this.auctions
-                        .aid);
-                    this.hidWebsocket = new WebSocket('ws://localhost:8080/hid/' + this.auctions.aid);
-                    this.textWebsocket = new WebSocket('ws://localhost:8080/text/' + this.auctions.aid);
-                    //实时订阅最新价格变动 改变竞价
-                    this.npriceWebsocket.onmessage = (evt) => {
-                        this.auctions.nprice = evt.data;
-                        this.changeMyNprice()
-                    };
-                    //实时订阅最新竞拍者ID 改变竞拍者
-                    this.hidWebsocket.onmessage = (evt) => {
-                        this.auctions.hid = evt.data;
-                        //如果当前竞拍者不是我
-                        if (this.auctions.hid != this.hid) {
-                            $("#playAuctionMsg").text("");
-                        }
-                    };
-                    //实时订阅最新价格变动 改变竞价
-                    this.textWebsocket.onmessage = (evt) => {
-                        this.getCommentList(this.pageNum)
-                    };
-
+                    this.auctionInfo = resp.data.data;
                 })
-
         },
         methods: {
             validMyNprice() {
-                if (this.auction.myNprice == "") {
+                if (this.auction.nprice == "") {
                     $("#myNpriceMsg").text("")
                     return;
                 }
@@ -338,8 +305,8 @@
                     $("#myNpriceMsg").text("")
                     return;
                 }
-                if (this.auction.myNprice- (this.auction.nprice == 0 ? this.auction.bprice : this.auction.nprice) -
-                    this.auction.increase < 0) {
+                if (this.auction.nprice - (this.auctionInfo.nprice == 0 ? this.auctionInfo.bprice : this.auctionInfo.nprice) -
+                    this.auctionInfo.increase < 0) {
                     $("#myNpriceMsg").text("您的竞价必须大于当前竞价+增长价").css("color", "red")
                     $("#playAuctionMsg").text("")
                 } else {
@@ -351,7 +318,7 @@
                     alert("竞拍已结束，请关注其他宝物！")
                     return;
                 }
-                if (this.auction.hid == this.auctions.createrid) {
+                if (this.auction.hid == this.auctionInfo.createrid) {
                     alert("您不能参与自己发布的拍品交易！")
                     return;
                 }
@@ -362,8 +329,7 @@
                     return;
                 }
                 axios
-                    .get("auction/updateNprice?aid=" + this.auctions.aid + "&nprice=" + this.auction.myNprice + "&hid=" + this
-                        .auction.hid)
+                    .post("auction/updateNprice",this.auction)
                     .then(resp => {
                         if (resp.data.code == false) {
                             $("#playAuctionMsg").text("余额不足，请充值！").css("color", "red");
@@ -379,9 +345,9 @@
                     })
             },
             changeMyNprice() {
-                this.auction.myNprice = parseInt(this.auction.nprice) == 0 ? parseInt(this.auction.bprice) + parseInt(
-                    this.auction.increase) :
-                    parseInt(this.auction.nprice) + parseInt(this.auction.increase);
+                this.auction.nprice = parseInt(this.auctionInfo.nprice) == 0 ? parseInt(this.auctionInfo.bprice) + parseInt(
+                    this.auctionInfo.increase) :
+                    parseInt(this.auctionInfo.nprice) + parseInt(this.auctionInfo.increase);
             },
             submitText() {
                 if (this.myTime == "竞拍已结束，请关注其他宝物！") {

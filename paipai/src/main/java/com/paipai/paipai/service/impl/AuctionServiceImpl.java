@@ -28,21 +28,21 @@ public class AuctionServiceImpl extends ServiceImpl<AuctionMapper, Auction> impl
     private HuiyuanMapper huiyuanMapper;
     @Resource
     private AuctionMapper auctionMapper;
-
     @Resource
     private JingpaiMapper jingpaiMapperl;
     @Override
     public void auctionning(Auction auction) throws Exception {
+        System.out.println(auction);
         //1. 修改当前竞拍者的余额和冻结金额；
         Huiyuan nowHuiyuan = huiyuanMapper.selectById(auction.getHid());
         Auction nowAuction = auctionMapper.selectById(auction.getAid());
         UpdateWrapper<Huiyuan> huiyuanUpdateWrapper = new UpdateWrapper<>();
         huiyuanUpdateWrapper.eq("hid",nowHuiyuan.getHid());
-        huiyuanUpdateWrapper.setSql("hyue = hyue - " + auction.getAbmoney());
-        huiyuanUpdateWrapper.setSql("hicemoney = hicemoney + " + auction.getAbmoney());
+        huiyuanUpdateWrapper.setSql("hyue = hyue - " + auction.getNprice());
+        huiyuanUpdateWrapper.setSql("hicemoney = hicemoney + " + auction.getNprice());
         huiyuanMapper.update(null,huiyuanUpdateWrapper);
         //2. 检查是否有上一个竞拍者。如果有的话，退还保证金；
-        if (!nowAuction.getHid().isEmpty()) {
+        if (nowAuction.getHid() != null) {
             Huiyuan beforeHuiyuan = huiyuanMapper.selectById(nowAuction.getHid());
             UpdateWrapper<Huiyuan> huiyuanUpdateWrapper1 = new UpdateWrapper<>();
             huiyuanUpdateWrapper1.eq("hid",beforeHuiyuan.getHid());

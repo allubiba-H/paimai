@@ -12,10 +12,7 @@ import com.paipai.paipai.service.IHuiyuanService;
 import com.paipai.paipai.service.IPtypesService;
 import com.paipai.paipai.util.Constant;
 import com.paipai.paipai.util.R;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -182,14 +179,14 @@ public class AuctionController {
         return R.success(auction);
     }
 
-    @GetMapping("updateNprice")
-    public R updateNprice(Auction auction) throws Exception {
+    @PostMapping("updateNprice")
+    public R updateNprice(@RequestBody Auction auction) throws Exception {
         Huiyuan huiyuan = huiyuanService.getById(auction.getHid());
         Auction auction1 = auctionService.getById(auction.getAid());
 
-        if (huiyuan.getHyue() < auction1.getAbmoney()) {
-            return R.success("余额不足，请充值再竞拍！");
-        }
+//        if (huiyuan.getHyue() < auction1.getAbmoney()) {
+//            return R.success("余额不足，请充值再竞拍！");
+//        }
         auctionService.auctionning(auction);
         return R.success("竞拍成功");
     }
