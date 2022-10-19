@@ -155,10 +155,8 @@
                 <p>请输入竞拍价格：<input @blur="validMyNprice" @mouseout="validMyNprice" v-model.number="auction.nprice"
                                   type="number" id="price" name="price" style="width: 120px"/>
                     <span id="myNpriceMsg">
-
 							</span>
                 </p>
-
                 <br>
                 <p style="padding-left: 70px">
                     <input @click="playAuction" type="button" value="立即竞拍" class="jp-button"/>
@@ -273,6 +271,7 @@
                 createrid: '',
             },
             time: '',
+            myTime:0,
             total: 0, //总记录条数
             pageNum: 1, //第几页
             pages: 0, //有几页
@@ -326,7 +325,6 @@
                     let [nprice,hid]  = res.split(",");
                     this.auctionInfo.nprice = nprice;
                     this.auctionInfo.hid = hid;
-
                 }
             },
             playAuction() {
@@ -437,7 +435,7 @@
                 second: parseInt(now.getSeconds()) //60
             }
 
-            let time = vm.auction.etime.split("-");
+            let time = vm.auctionInfo.etime.split("-");
             let etime = {
                 year: (parseInt(time[0]) - 2020) * 31536000,
                 month: parseInt(time[1]) * 2592000,
@@ -456,9 +454,6 @@
                 myTime = "竞拍已结束，请关注其他宝物！"
                 vm.myTime = myTime;
                 //断开与服务器的连接
-                vm.npriceWebsocket.close();
-                vm.hidWebsocket.close();
-                vm.textWebsocket.close();
                 //停止循环定时器
                 clearInterval(timer);
                 return;
