@@ -37,7 +37,7 @@ public class Job {
 
     @Scheduled(cron = "0 0 8 * * ?")
     public void startAuction() {
-        SimpleDateFormat sdf = new SimpleDateFormat();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String now = sdf.format(new Date());
         UpdateWrapper<Auction> wrapper = new UpdateWrapper<>();
         wrapper.set("state", Constant.AUCTION_STATE_AUCTIONING);
@@ -48,7 +48,7 @@ public class Job {
 
     @Scheduled(cron = "0 0 20 * * ?")
     public void endAuction() throws MessagingException {
-        SimpleDateFormat sdf = new SimpleDateFormat();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String now = sdf.format(new Date());
         //查询今天要结束的拍品
         QueryWrapper<Auction> queryWrapper = new QueryWrapper<>();
@@ -83,7 +83,7 @@ public class Job {
             messageHelper.setFrom(from);
             messageHelper.setTo(huiyuan.getHemail());
             messageHelper.setSubject("恭喜您，成功竞拍了卓越拍拍上的商品");
-            messageHelper.setText("您已经成功竞拍"+ "<a href='http://localhost:63342/paimaisystem/paimaiclient/login.html'" + "请于三天之内付款，否则违约",true);
+            messageHelper.setText("您已经成功竞拍"+ "<a href='http://localhost:63342/paimaisystem/paimaiclient/login.html'>进入查看</a>" + "请于三天之内付款，否则违约",true);
             javaMailSender.send(mimeMessage);
         }
     }
