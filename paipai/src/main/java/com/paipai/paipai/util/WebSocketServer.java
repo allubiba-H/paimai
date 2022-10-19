@@ -22,6 +22,7 @@ public class WebSocketServer {
 
     @OnOpen
     public void openSocket(@PathParam("id") Integer id, Session session) {
+        System.out.println("开启成功" + session);
         List<Session> list = null;
         //检查集合中是都有Aid,如果没有，新创建一个list ,把list 绑定到对应的aid 上；
         if (!map.containsKey(id)) {
@@ -56,7 +57,6 @@ public class WebSocketServer {
     }
     public static void sendMessage(Integer id,Integer nprice,String hid) {
         List<Session> list = map.get(id);
-
         for (Session session:list) {
             session.getAsyncRemote().sendText(nprice.toString() + "," +  hid);
         }

@@ -98,7 +98,7 @@ $(function () {
 //后端项目的地址
 var baseurl = "http://localhost:8888/paipai/";
 var imgurl = "http://localhost:9999/upload/img";
-var wsurl = "ws://localhost:8080/"
+var wsurl = "ws://localhost:8888/websocket"
 //默认地址为后端项目的地址
 axios.defaults.baseURL = baseurl;
 axios.defaults.withCredentials = true

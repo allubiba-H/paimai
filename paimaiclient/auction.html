@@ -174,68 +174,68 @@
         <div class="clr10"></div>
 
         <!-- 评论区begin -->
-<!--        <div id="commentText" style="margin-top: 50px;">-->
+        <!--        <div id="commentText" style="margin-top: 50px;">-->
 
-<!--            <form>-->
-<!--                <input v-model="text" type="text" placeholder=" 在此处发布你的评论"-->
-<!--                       style="outline: none; width: 600px;height: 40px; background-color: white; border: 1.5px #A44239 solid; border-radius: 5px;">-->
-<!--                <input @click="submitText()" type="button" value="评论"-->
-<!--                       style="border-radius: 15px; width: 80px; height: 45px; color: white; border: none; background-color: #A44239; font-weight: bolder; margin-top: 2px;">-->
-<!--            </form>-->
-<!--            <br>-->
-            <!-- 排序区 按热度/按时间 -->
-<!--            <div style="width: 145px; padding-bottom: 20px;">-->
-<!--                <div style="display: inline; padding: 10px;"><a href="#" :class="{'aisAlive' : aliveNum == 1}"-->
-<!--                                                                @click="showAlive(1)">按热度</a></div>-->
-<!--                <div style="display: inline; padding: 10px;"><a href="#" :class="{'aisAlive' : aliveNum == 2}"-->
-<!--                                                                @click="showAlive(2)">按时间</a></div>-->
-<!--            </div>-->
-<!--            <br>-->
-<!--            <p v-for="comment in commentList" style="margin-bottom: 30px;">-->
+        <!--            <form>-->
+        <!--                <input v-model="text" type="text" placeholder=" 在此处发布你的评论"-->
+        <!--                       style="outline: none; width: 600px;height: 40px; background-color: white; border: 1.5px #A44239 solid; border-radius: 5px;">-->
+        <!--                <input @click="submitText()" type="button" value="评论"-->
+        <!--                       style="border-radius: 15px; width: 80px; height: 45px; color: white; border: none; background-color: #A44239; font-weight: bolder; margin-top: 2px;">-->
+        <!--            </form>-->
+        <!--            <br>-->
+        <!-- 排序区 按热度/按时间 -->
+        <!--            <div style="width: 145px; padding-bottom: 20px;">-->
+        <!--                <div style="display: inline; padding: 10px;"><a href="#" :class="{'aisAlive' : aliveNum == 1}"-->
+        <!--                                                                @click="showAlive(1)">按热度</a></div>-->
+        <!--                <div style="display: inline; padding: 10px;"><a href="#" :class="{'aisAlive' : aliveNum == 2}"-->
+        <!--                                                                @click="showAlive(2)">按时间</a></div>-->
+        <!--            </div>-->
+        <!--            <br>-->
+        <!--            <p v-for="comment in commentList" style="margin-bottom: 30px;">-->
 
-<!--                <span v-if="comment.like >= 5" style="color: red;">热门评论❤❤❤❤❤❤</span><br>-->
-<!--                <span v-if="comment.hid != auction.createrid && auction.hid != comment.hid">用户</span>-->
-<!--                <span v-else-if="comment.hid != auction.createrid && auction.hid == comment.hid"-->
-<!--                      style="color: palevioletred;">当前最高竞价人</span>-->
-<!--                <span v-else-if="comment.hid == auction.createrid" style="color: blueviolet;">发布人</span>-->
-<!--                <span style="color: cadetblue;">{{comment.huiYuan.hname}}</span>-->
-<!--                说：<br><span class="" style="margin-left: 110px;">{{comment.text}}</span>-->
-<!--                <span class="" style="margin-left: 30px;">-->
-<!--							<a style="text-decoration: none; color: seagreen;" href="#"-->
-<!--                               @click="addLike(comment.cid)">赞许({{comment.like}})</a>-->
-<!--							<a v-if="comment.hid == hid" style="text-decoration: none; color: darkred;" href="#"-->
-<!--                               @click="deleteText(comment.cid)">删除</a>-->
-<!--						</span>-->
-<!--                <br>-->
-<!--                <span style="color: darkgray;margin-left: 350px; font-size: 14px;">——{{comment.time}}</span>-->
-<!--            </p>-->
-<!--            <div id="index">-->
-<!--                <span class="indexSpan">一共查询到{{total}}条记录 {{pages}}页</span>-->
-<!--                <span class="indexSpan">当前是第{{pageNum}}页</span>-->
-<!--                <span class="indexSpan"><button v-if="isFirstPage" disabled @click="front">上一页</button>-->
-<!--							<button v-if="!isFirstPage" @click="front">上一页</button></span>-->
+        <!--                <span v-if="comment.like >= 5" style="color: red;">热门评论❤❤❤❤❤❤</span><br>-->
+        <!--                <span v-if="comment.hid != auction.createrid && auction.hid != comment.hid">用户</span>-->
+        <!--                <span v-else-if="comment.hid != auction.createrid && auction.hid == comment.hid"-->
+        <!--                      style="color: palevioletred;">当前最高竞价人</span>-->
+        <!--                <span v-else-if="comment.hid == auction.createrid" style="color: blueviolet;">发布人</span>-->
+        <!--                <span style="color: cadetblue;">{{comment.huiYuan.hname}}</span>-->
+        <!--                说：<br><span class="" style="margin-left: 110px;">{{comment.text}}</span>-->
+        <!--                <span class="" style="margin-left: 30px;">-->
+        <!--							<a style="text-decoration: none; color: seagreen;" href="#"-->
+        <!--                               @click="addLike(comment.cid)">赞许({{comment.like}})</a>-->
+        <!--							<a v-if="comment.hid == hid" style="text-decoration: none; color: darkred;" href="#"-->
+        <!--                               @click="deleteText(comment.cid)">删除</a>-->
+        <!--						</span>-->
+        <!--                <br>-->
+        <!--                <span style="color: darkgray;margin-left: 350px; font-size: 14px;">——{{comment.time}}</span>-->
+        <!--            </p>-->
+        <!--            <div id="index">-->
+        <!--                <span class="indexSpan">一共查询到{{total}}条记录 {{pages}}页</span>-->
+        <!--                <span class="indexSpan">当前是第{{pageNum}}页</span>-->
+        <!--                <span class="indexSpan"><button v-if="isFirstPage" disabled @click="front">上一页</button>-->
+        <!--							<button v-if="!isFirstPage" @click="front">上一页</button></span>-->
 
-<!--                <span v-if="pages >= 9" v-for="count in pages">-->
-<!--							<a v-if="count<=3" id="count" href="#" @click="getCommentList(count)"-->
-<!--                               v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>-->
-<!--						</span>-->
-<!--                <span style="margin: 2px;" v-if="pages >= 9" v-for="count in 6">·</span>-->
-<!--                <span v-if="pages >= 9" v-for="count in pages">-->
-<!--							<a v-if="count > pages - 3" id="count" href="#" @click="getCommentList(count)"-->
-<!--                               v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>-->
-<!--						</span>-->
-<!--                <span v-if="pages < 9" v-for="count in pages">-->
-<!--							<a id="count" href="#" @click="getCommentList(count)" v-on:click="isLight(count)"-->
-<!--                               :class="{'light':isLightNum==count}">{{count}}</a>-->
-<!--						</span>-->
-<!--                <span class="indexSpan">-->
-<!--							<button v-if="isLastPage" disabled @click="next">下一页</button>-->
-<!--							<button v-if="!isLastPage" @click="next">下一页</button>-->
-<!--						</span>-->
-<!--            </div>-->
-        </div>
-        <!-- 评论区end -->
+        <!--                <span v-if="pages >= 9" v-for="count in pages">-->
+        <!--							<a v-if="count<=3" id="count" href="#" @click="getCommentList(count)"-->
+        <!--                               v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>-->
+        <!--						</span>-->
+        <!--                <span style="margin: 2px;" v-if="pages >= 9" v-for="count in 6">·</span>-->
+        <!--                <span v-if="pages >= 9" v-for="count in pages">-->
+        <!--							<a v-if="count > pages - 3" id="count" href="#" @click="getCommentList(count)"-->
+        <!--                               v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>-->
+        <!--						</span>-->
+        <!--                <span v-if="pages < 9" v-for="count in pages">-->
+        <!--							<a id="count" href="#" @click="getCommentList(count)" v-on:click="isLight(count)"-->
+        <!--                               :class="{'light':isLightNum==count}">{{count}}</a>-->
+        <!--						</span>-->
+        <!--                <span class="indexSpan">-->
+        <!--							<button v-if="isLastPage" disabled @click="next">下一页</button>-->
+        <!--							<button v-if="!isLastPage" @click="next">下一页</button>-->
+        <!--						</span>-->
+        <!--            </div>-->
     </div>
+    <!-- 评论区end -->
+</div>
 
 </div>
 
@@ -248,11 +248,12 @@
 
 
 <script>
+
     var vm = new Vue({
         el: '#content',
         data: {
-            num:0,
-            auction:{
+            num: 0,
+            auction: {
                 hid: '',
                 aid: '',
                 nprice: '',
@@ -271,7 +272,7 @@
                 abackup: "",
                 createrid: '',
             },
-            time:'',
+            time: '',
             total: 0, //总记录条数
             pageNum: 1, //第几页
             pages: 0, //有几页
@@ -290,9 +291,11 @@
             }
             var str = location.search;
             this.auction.aid = Number(str.substring(1));
+
             axios.get("auction/getById?aid=" + this.auction.aid)
                 .then(resp => {
                     this.auctionInfo = resp.data.data;
+                    this.webSocketInition();
                 })
         },
         methods: {
@@ -313,6 +316,19 @@
                     $("#myNpriceMsg").text("")
                 }
             },
+            webSocketInition() {
+                const ws = new WebSocket(`${wsurl}/${this.auction.aid}`);
+                ws.onopen = (e) => {
+                    console.log("Open", e)
+                }
+                ws.onmessage = (e) => {
+                    let res = e.data;
+                    let [nprice,hid]  = res.split(",");
+                    this.auctionInfo.nprice = nprice;
+                    this.auctionInfo.hid = hid;
+
+                }
+            },
             playAuction() {
                 if ($("#timeMsg").text() == "竞拍已结束，请关注其他宝物！") {
                     alert("竞拍已结束，请关注其他宝物！")
@@ -329,7 +345,7 @@
                     return;
                 }
                 axios
-                    .post("auction/updateNprice",this.auction)
+                    .post("auction/updateNprice", this.auction)
                     .then(resp => {
                         if (resp.data.code == -1) {
                             $("#playAuctionMsg").text(resp.data.msg).css("color", "red");
@@ -399,6 +415,7 @@
                 this.aliveNum = aliveNum;
                 this.getCommentList(this.pageNum);
             }
+
         }
     });
 

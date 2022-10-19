@@ -12,6 +12,7 @@ import com.paipai.paipai.service.IHuiyuanService;
 import com.paipai.paipai.service.IPtypesService;
 import com.paipai.paipai.util.Constant;
 import com.paipai.paipai.util.R;
+import com.paipai.paipai.util.WebSocketServer;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -187,6 +188,7 @@ public class AuctionController {
             return R.error("余额不足，请充值再竞拍！");
         } else {
             auctionService.auctionning(auction);
+            WebSocketServer.sendMessage(auction.getAid(), auction.getNprice(), auction.getHid());
             return R.success("竞拍成功");
         }
     }
