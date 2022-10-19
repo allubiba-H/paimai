@@ -2,6 +2,8 @@ package com.paipai.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -24,7 +26,6 @@ public class MyConfig implements WebMvcConfigurer {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 //        registry.addInterceptor(new LoginInterception())
@@ -34,5 +35,12 @@ public class MyConfig implements WebMvcConfigurer {
     @Bean
     public ServerEndpointExporter serverEndpointExporter () {
        return new ServerEndpointExporter();
+    }
+    @Bean
+    public TaskScheduler taskScheduler() {
+        ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+        taskScheduler.setPoolSize(20);
+        taskScheduler.initialize();
+        return taskScheduler;
     }
 }
