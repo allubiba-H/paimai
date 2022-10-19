@@ -331,15 +331,12 @@
                 axios
                     .post("auction/updateNprice",this.auction)
                     .then(resp => {
-                        if (resp.data.code == false) {
-                            $("#playAuctionMsg").text("余额不足，请充值！").css("color", "red");
+                        if (resp.data.code == -1) {
+                            $("#playAuctionMsg").text(resp.data.msg).css("color", "red");
                             return;
                         }
-                        if (resp.data.isSuccess == false) {
-                            $("#playAuctionMsg").text("竞价失败，请重试！").css("color", "red");
-                        } else {
+                        if (resp.data.code == 0) {
                             $("#playAuctionMsg").text("您是当前最高竞价者，请关注！").css("color", "green");
-
                         }
 
                     })
