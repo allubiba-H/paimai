@@ -17,6 +17,8 @@ public class Constant {
     public static final Integer AUCTION_STATE_AUCTIONING = 4;
     //拍品状态 竞拍结束
     public static final Integer AUCTION_STATE_AUCTIONED = 5;
+    //交易结束
+    public static final Integer AUCTION_STATE_ENDED = 6;
     //交易状态
     //未支付
     public static final Integer DEAL_STATE_UNPAIED = 1;

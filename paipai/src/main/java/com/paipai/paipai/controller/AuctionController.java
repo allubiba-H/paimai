@@ -179,7 +179,6 @@ public class AuctionController {
         Auction auction = auctionService.getById(aid);
         return R.success(auction);
     }
-
     @PostMapping("updateNprice")
     public R updateNprice(@RequestBody Auction auction) throws Exception {
         Huiyuan huiyuan = huiyuanService.getById(auction.getHid());
@@ -195,8 +194,8 @@ public class AuctionController {
     @GetMapping("getAllByCreateridAndStatesInfo")
     public R getAllByCreateridAndStatesInfo(String id,Integer no) {
         QueryWrapper<Auction> wrapper = new QueryWrapper<>();
-        wrapper.eq("hid",id);
-        Page<Auction> page = auctionService.page(new Page<>(no, 10), wrapper);
+        wrapper.eq("createrid",id);
+        Page<Auction> page = auctionService.page(new Page<>(no, 5), wrapper);
         return R.success(page);
     }
 }

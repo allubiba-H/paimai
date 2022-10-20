@@ -172,7 +172,32 @@
                 </table>
             </form>
         </div>
+        <div id="index">
+            <span class="indexSpan">一共查询到{{total}}条记录 {{pages}}页</span>
+            <span class="indexSpan">当前是第{{pageNum}}页</span>
+            <span class="indexSpan"><button v-if="isFirstPages" disabled @click="front">上一页</button>
+					<button v-if="!isFirstPages" @click="front">上一页</button></span>
 
+            <span v-if="pages >= 9" v-for="count in pages">
+							<a v-if="count<=3" id="count" href="#" @click="initauctionList(count)"
+                               v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>
+					</span>
+            <span style="margin: 2px;" v-if="pages >= 9" v-for="count in 6">·</span>
+            <span v-if="pages >= 9" v-for="count in pages">
+					<a v-if="count > pages - 3" id="count" href="#" @click="initauctionList(count)"
+                       v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>
+					</span>
+            <span v-if="pages < 9" v-for="count in pages">
+						<a id="count" href="#" @click="initauctionList(count)"
+                           v-on:click="isLight(count)" :class="{'light':isLightNum==count}">{{count}}</a>
+					</span>
+            <span class="indexSpan">
+						<button v-if="isLastPages" disabled @click="next">下一页</button>
+						<button v-if="!isLastPages" @click="next">下一页</button>
+					</span>
+
+
+        </div>
     </div>
 
 </div>
@@ -212,6 +237,14 @@
             //商品类型加载
 
         },
+        computed:{
+            isFirstPages() {
+                return this.pageNum === 1
+            },
+            isLastPages() {
+                return this.pageNum === this.pages
+            }
+        },
         methods: {
             showinfo: function (i) {
                 this.num = i;
@@ -230,10 +263,20 @@
                 });
             },
             front() {
+                if (this.pageNum == 1) {
+                    this.isFirstPage = true;
+                    alert("不能再进行")
+                    return;
+                }
                 this.initdealrecordList(this.pageNum - 1);
                 this.isLightNum--;
             },
             next() {
+                if (this.pageNum == this.pages) {
+                    this.isLastPage = true;
+                    alert("不能再进行")
+                    return;
+                }
                 this.initdealrecordList(this.pageNum + 1);
                 this.isLightNum++;
             },

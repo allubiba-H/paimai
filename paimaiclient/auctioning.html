@@ -125,8 +125,8 @@
         <div id="index" style="text-align: center;float: left;">
             <span class="indexSpan">一共查询到{{total}}条记录 {{pages}}页</span>
             <span class="indexSpan">当前是第{{pageNum}}页</span>
-            <span class="indexSpan"><button v-if="isFirstPage" disabled @click="front">上一页</button>
-						<button v-if="!isFirstPage" @click="front">上一页</button></span>
+            <span class="indexSpan"><button v-if="isFirstPages" disabled @click="front">上一页</button>
+						<button v-if="!isFirstPages" @click="front">上一页</button></span>
 
             <span v-if="pages >= 9" v-for="count in pages">
 						<a v-if="count<=3" id="count" href="#" @click="toPage(count)" v-on:click="isLight(count)"
@@ -142,8 +142,8 @@
                            :class="{'light':isLightNum==count}">{{count}}</a>
 					</span>
             <span class="indexSpan">
-						<button v-if="isLastPage" disabled @click="next">下一页</button>
-						<button v-if="!isLastPage" @click="next">下一页</button>
+						<button v-if="isLastPages" disabled @click="next">下一页</button>
+						<button v-if="!isLastPages" @click="next">下一页</button>
 					</span>
         </div>
 
@@ -195,6 +195,14 @@
                 });
             }
         },
+        computed:{
+            isFirstPages() {
+                return this.pageNum === 1
+            },
+            isLastPages() {
+                return this.pageNum === this.pages
+            }
+        },
         methods: {
             showinfo: function (i) {
                 this.num = i;
@@ -207,6 +215,7 @@
                     this.total = data.total;
                     this.pageNum = pageNum;
                     this.pages = data.pages;
+                    this.isLightNum = pageNum;
                 });
             },
             //点击查询用的查询方法，在这里可以改变this.ganme和this.tid 其他地方都不能改变
@@ -221,8 +230,7 @@
                     this.total = data.total;
                     this.pageNum = pageNum;
                     this.pages = data.pages;
-                    this.isFirstPage = result.data.isFirstPage;
-                    this.isLastPage = result.data.isLastPage;
+                   this.isLightNum = pageNum;
                 });
             },
             //翻页时用的查询 不能改变this.gname和this.tid
@@ -234,8 +242,7 @@
                     this.total = data.total;
                     this.pageNum = pageNum;
                     this.pages = data.pages;
-                    this.isFirstPage = result.data.isFirstPage;
-                    this.isLastPage = result.data.isLastPage;
+                    this.isLightNum = pageNum;
                 });
             },
             isLight(i) {
