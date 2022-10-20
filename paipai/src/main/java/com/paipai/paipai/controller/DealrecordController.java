@@ -60,5 +60,13 @@ public class DealrecordController {
         return R.success(dealrecordPage);
     }
 
+    @GetMapping("getById")
+    public R getById(Integer cjid) {
+        Dealrecord dealrecord = dealrecordService.getById(cjid);
+        Auction auction = auctionService.getById(dealrecord.getAid());
+        dealrecord.setAuction(auction);
+        return R.success(dealrecord);
+    }
+
 }
 

@@ -12,6 +12,7 @@
     <script type="text/javascript" src="JsCss/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=0DBTh1xpZIXyV9u1CzpbyFsh"></script>
     <script type="text/javascript" src="JsCss/marker.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.10.1/qs.js"></script>
     <script src="JsCss/index.js"></script>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -22,19 +23,24 @@
             height: 250px;
             border: solid 1px #AAA;
         }
-
         table {
-            border-collapse: separate;
-            border-spacing: 10px;
+        }
+
+        table th {
+            font-size: 18px;
+
+            color: #A44239;
         }
 
         tr {
             width: 80px;
-
         }
+        table tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+        table tr:nth-child(even) {
 
-        td {
-
+            background-color: #e9ecef;
         }
 
         a {
@@ -57,12 +63,6 @@
 
         .light {
             color: red;
-        }
-
-        table th {
-            font-size: 18px;
-
-            color: #A44239;
         }
     </style>
 </head>
@@ -130,7 +130,7 @@
             <input type="button" name="" id="" value="查询" @click="initauctionListByTime(1)" style="width: 75px;"/>
             <input type="button" name="" id="" value="重置" @click="reset()" style="width: 75px;"/>
             <form action="" method="" class="cz-form">
-                <table cellspacing="1" cellpadding="1" style="border: 1px solid; width: 860px;">
+                <table>
                     <tr>
                         <th>宝物状态</th>
                         <th>宝物名称</th>
@@ -150,7 +150,7 @@
                         <td>{{auction.bprice}}</td>
                         <td>{{auction.stime}}</td>
                         <td>{{auction.etime}}</td>
-                        <td><textarea cols="15" rows="3">{{auction.abackup}}</textarea></td>
+                        <td><textarea readonly cols="15" rows="3">{{auction.abackup}}</textarea></td>
                         <td><a v-if="auction.state == 3" href="#" @click="toAuctionRepublish(auction.aid)"
                                style="text-decoration: none; color: #8F9747;font-size: 18px;">重新发布</a></td>
                     </tr>
@@ -194,6 +194,7 @@
     </div>
 </div>
 <script>
+    const qs = Qs;
     var vm = new Vue({
         el: '#about',
         data: {
@@ -269,56 +270,26 @@
                 this.initauctionList(this.pageNum + 1);
                 this.isLightNum++;
                 if (this.pageNum + 1 == this.pages) this.isLastPage = true;
-
             },
             initauctionListByTime(pageNum) {
-                var t1 = 0;
-                var t2 = 0;
-                var t3 = 0;
-                var t4 = 0;
-                var t5 = 0;
-                var t6 = 0;
-                for (var i = 0; i < this.selectStateList.length; i++) {
-                    if (this.selectStateList[i] == 1) {
-                        t1 = 1;
-                    } else if (this.selectStateList[i] == 2) {
-                        t2 = 1;
-                    } else if (this.selectStateList[i] == 3) {
-                        t3 = 1;
-                    } else if (this.selectStateList[i] == 4) {
-                        t4 = 1;
-                    } else if (this.selectStateList[i] == 5) {
-                        t5 = 1;
-                    } else if (this.selectStateList[i] == 6) {
-                        t6 = 1;
-                    }
+                const qs = Qs;
+                let info = {
+                    id:this.hid,
+                    no:pageNum,
+                    list:this.selectStateList
                 }
-                if (this.selectStateList.length == 0) {
-                    t1 = 1;
-                    t2 = 1;
-                    t3 = 1;
-                    t4 = 1;
-                    t5 = 1;
-                    t6 = 1;
-                }
-                this.t1 = t1;
-                this.t2 = t2;
-                this.t3 = t3;
-                this.t4 = t4;
-                this.t5 = t5;
-                this.t6 = t6;
-                axios.get('auction/getAllByCreateridAndStatesInfo?createrid=' + this.hid + "&pageNum=" + pageNum + "&t1=" + t1 + "&t2=" + t2 + "&t3=" + t3 + "&t4=" + t4 + "&t5=" + t5 + "&t6=" + t6).then(result => {
-                    this.auctionList = result.data.list;
-                    this.total = result.data.total;
+
+                axios.get('auction/getAllByMultiple?' + qs.stringify(info,{indices:false}) ).then(result => {
+                    let data = result.data.data;
+                    this.auctionList = data.records;
+                    this.total = data.total;
                     this.pageNum = pageNum;
-                    this.pages = result.data.pages;
-                    this.isFirstPage = result.data.isFirstPage;
-                    this.isLastPage = result.data.isLastPage;
-                    this.isLightNum = 1;
+                    this.pages = data.pages;
+                    this.isLightNum = pageNum;
                 });
             },
             reset() {
-                this.selectStateList = []
+                this.selectStateList = [];
             },
             toAuctionRepublish(aid) {
                 window.location.href = "auctionRepublish.html?" + aid

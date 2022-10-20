@@ -151,9 +151,7 @@
                         <td>{{dealrecord.auction.nprice}}</td>
                         <td>{{dealrecord.cjmoney}}</td>
                         <td>
-                            <a v-if="dealrecord.did == 1" href="#" @click="pay(dealrecord.aid,dealrecord.cjid)"
-                               style="text-decoration: none; color: #8F9747;font-size: 18px;">确认付款</a>
-                            <a v-if="dealrecord.did == 3" href="#" @click="takeDelivery(dealrecord.cjid)"
+                            <a v-if="dealrecord.did == 1" href="#" @click="takeDelivery(dealrecord.cjid)"
                                style="text-decoration: none; color: #8F9747;font-size: 18px;">取货</a>
                         </td>
                         <td>
@@ -263,34 +261,14 @@
                 });
             },
             front() {
-                if (this.pageNum == 1) {
-                    this.isFirstPage = true;
-                    alert("不能再进行")
-                    return;
-                }
                 this.initdealrecordList(this.pageNum - 1);
                 this.isLightNum--;
             },
             next() {
-                if (this.pageNum == this.pages) {
-                    this.isLastPage = true;
-                    alert("不能再进行")
-                    return;
-                }
                 this.initdealrecordList(this.pageNum + 1);
                 this.isLightNum++;
             },
-            pay(aid, cjid) {
-                axios.get("auction/pay?aid=" + aid + "&cjid=" + cjid)
-                    .then(resp => {
-                        if (resp.data == true) {
-                            alert("付款成功，谢谢惠顾！")
-                            window.location.reload()
-                        } else {
-                            alert("付款失败，账户余额不足！")
-                        }
-                    })
-            },
+
             defer(cjid) {
                 axios.get("dealrecord/updateDeferByCjid?cjid=" + cjid + "&defer=" + 1)
                     .then(resp => {
@@ -298,14 +276,7 @@
                     })
             },
             takeDelivery(cjid) {
-                axios.get("dealrecord/sendTakeDeliveryEmail?cjid=" + cjid)
-                    .then(resp => {
-                        if (resp.data == true) {
-                            alert("已将取货信息发送至您的邮箱，注意查收！")
-                        } else {
-                            alert("取货失败，请联系管理员处理！")
-                        }
-                    })
+                location.href = "takeDelivery.html?"+cjid;
             }
         }
     });

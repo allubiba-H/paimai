@@ -13,4 +13,6 @@ import com.paipai.paipai.entity.Dealrecord;
  */
 public interface IDealrecordService extends IService<Dealrecord> {
 
+    void pay(Integer id);
+
 }

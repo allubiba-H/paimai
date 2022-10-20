@@ -8,6 +8,7 @@ import com.paipai.paipai.entity.Auction;
 import com.paipai.paipai.entity.Huiyuan;
 import com.paipai.paipai.entity.Ptypes;
 import com.paipai.paipai.service.IAuctionService;
+import com.paipai.paipai.service.IDealrecordService;
 import com.paipai.paipai.service.IHuiyuanService;
 import com.paipai.paipai.service.IPtypesService;
 import com.paipai.paipai.util.Constant;
@@ -33,15 +34,15 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/paipai/auction")
 public class AuctionController {
-
     @Resource
     private IAuctionService auctionService;
-
     @Resource
     private IPtypesService ptypesService;
-
     @Resource
     private IHuiyuanService huiyuanService;
+    @Resource
+    private IDealrecordService dealrecordService;
+
 
     @PostMapping("addAuction")
     public R addAuction(Auction auction, MultipartFile file) {
@@ -179,6 +180,7 @@ public class AuctionController {
         Auction auction = auctionService.getById(aid);
         return R.success(auction);
     }
+
     @PostMapping("updateNprice")
     public R updateNprice(@RequestBody Auction auction) throws Exception {
         Huiyuan huiyuan = huiyuanService.getById(auction.getHid());
@@ -191,12 +193,33 @@ public class AuctionController {
             return R.success("竞拍成功");
         }
     }
+
     @GetMapping("getAllByCreateridAndStatesInfo")
-    public R getAllByCreateridAndStatesInfo(String id,Integer no) {
+    public R getAllByCreateridAndStatesInfo(String id, @RequestParam(required = true,defaultValue = "1") Integer no) {
         QueryWrapper<Auction> wrapper = new QueryWrapper<>();
-        wrapper.eq("createrid",id);
+        wrapper.eq("createrid", id);
+        wrapper.orderByAsc("stime");
         Page<Auction> page = auctionService.page(new Page<>(no, 5), wrapper);
         return R.success(page);
+    }
+
+    @GetMapping("getAllByMultiple")
+    public R getAllByMultiple(String id,@RequestParam(required = true,defaultValue = "1") Integer no,Integer[] list) {
+
+        QueryWrapper<Auction> wrapper = new QueryWrapper<>();
+        wrapper.eq("createrid",id);
+        if (list != null) {
+            wrapper.in("state",list);
+        }
+        wrapper.orderByAsc("stime");
+        Page<Auction> auctionPage = auctionService.page(new Page<>(no, 5), wrapper);
+        return R.success(auctionPage);
+
+    }
+    @GetMapping("pay")
+    public R pay(Integer id) {
+        dealrecordService.pay(id);
+        return R.success("付款成功");
     }
 }
 
