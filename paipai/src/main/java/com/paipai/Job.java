@@ -46,7 +46,7 @@ public class Job {
         service.update(wrapper);
     }
 
-    @Scheduled(cron = "0 0 20 * * ?")
+    @Scheduled(cron = "0 26 9 * * ?")
     public void endAuction() throws MessagingException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String now = sdf.format(new Date());
@@ -77,6 +77,7 @@ public class Job {
             dealrecord.setHid(ac.getHid());
             Huiyuan huiyuan = huiyuanService.getById(ac.getHid());
             dealrecord.setHname(huiyuan.getHname());
+            dealrecordService.save(dealrecord);
             //发送邮箱
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage,true);

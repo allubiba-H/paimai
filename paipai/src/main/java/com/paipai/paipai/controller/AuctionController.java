@@ -192,5 +192,12 @@ public class AuctionController {
             return R.success("竞拍成功");
         }
     }
+    @GetMapping("getAllByCreateridAndStatesInfo")
+    public R getAllByCreateridAndStatesInfo(String id,Integer no) {
+        QueryWrapper<Auction> wrapper = new QueryWrapper<>();
+        wrapper.eq("hid",id);
+        Page<Auction> page = auctionService.page(new Page<>(no, 10), wrapper);
+        return R.success(page);
+    }
 }
 

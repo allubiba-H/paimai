@@ -247,13 +247,12 @@
                 this.isLightNum = i;
             },
             initauctionList(pageNum) {
-                axios.get('auction/getAllByCreateridAndStatesInfo?createrid=' + this.hid + "&pageNum=" + pageNum + "&t1=" + this.t1 + "&t2=" + this.t2 + "&t3=" + this.t3 + "&t4=" + this.t4 + "&t5=" + this.t5 + "&t6=" + this.t6).then(result => {
-                    this.auctionList = result.data.list;
-                    this.total = result.data.total;
+                axios.get('auction/getAllByCreateridAndStatesInfo?id=' + this.hid + "&no=" + pageNum).then(result => {
+                    let data = result.data.data;
+                    this.auctionList = data.records;
+                    this.total = data.total;
                     this.pageNum = pageNum;
-                    this.pages = result.data.pages;
-                    this.isFirstPage = result.data.isFirstPage;
-                    this.isLastPage = result.data.isLastPage;
+                    this.pages = data.pages;
                 });
             },
             front() {

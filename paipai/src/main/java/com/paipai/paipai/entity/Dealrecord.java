@@ -1,6 +1,8 @@
 package com.paipai.paipai.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,6 +34,7 @@ public class Dealrecord implements Serializable {
 
     private Integer cjmoney;
 
+    @TableField(value = "cjtime", fill = FieldFill.INSERT)
     private String cjtime;
 
     private String hid;
@@ -42,5 +45,10 @@ public class Dealrecord implements Serializable {
 
     private String dbackup;
 
+    @TableField(exist = false)
+    private Auction auction;
+
+    @TableField(exist = false)
+    private String offtime;
 
 }

@@ -126,7 +126,7 @@
                     style="color: red; font-size: 18px;margin-left: 30px;">请在付款期限内付款！</span></p>
         </div>
         <div class="cz-con-text">
-            <form action="" method="" class="cz-form">
+            <form  class="cz-form">
                 <table cellspacing="1" cellpadding="1" style="border: 1px solid; width: 860px;">
                     <tr>
                         <th>宝物状态</th>
@@ -140,31 +140,31 @@
                         <th>申&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请</th>
                     </tr>
                     <tr v-for="dealrecord in dealrecordList">
-                        <td v-if="0 == dealrecord.did">待付款</td>
-                        <td v-else-if="2 == dealrecord.did">交易完成</td>
-                        <td v-else-if="3 == dealrecord.did">违约</td>
+                        <td v-if="1 == dealrecord.did">待付款</td>
+                        <td v-else-if="3 == dealrecord.did">交易完成</td>
+                        <td v-else-if="4 == dealrecord.did">违约</td>
                         <td>{{dealrecord.gname}}</td>
-                        <td><img width="50" height="40" :src="'http://localhost:8099'+dealrecord.auction.gpic">
+                        <td><img width="50" height="50" :src="'http://localhost:9999/upload/img/'+dealrecord.auction.gpic">
                         </td>
                         <td>{{dealrecord.auction.etime}}</td>
-                        <td>{{dealrecord.fktime}}</td>
+                        <td>{{dealrecord.offtime}}</td>
                         <td>{{dealrecord.auction.nprice}}</td>
                         <td>{{dealrecord.cjmoney}}</td>
                         <td>
-                            <a v-if="dealrecord.did == 0" href="#" @click="pay(dealrecord.aid,dealrecord.cjid)"
+                            <a v-if="dealrecord.did == 1" href="#" @click="pay(dealrecord.aid,dealrecord.cjid)"
                                style="text-decoration: none; color: #8F9747;font-size: 18px;">确认付款</a>
-                            <a v-if="dealrecord.did == 2" href="#" @click="takeDelivery(dealrecord.cjid)"
+                            <a v-if="dealrecord.did == 3" href="#" @click="takeDelivery(dealrecord.cjid)"
                                style="text-decoration: none; color: #8F9747;font-size: 18px;">取货</a>
                         </td>
                         <td>
-                            <a v-if="dealrecord.did == 0 && dealrecord.defer == 0" href="#"
+                            <a v-if="dealrecord.did == 1 && dealrecord.defer == 0" href="#"
                                @click="defer(dealrecord.cjid)"
                                style="text-decoration: none; color: #8F9747;font-size: 18px;">申请延期</a>
-                            <span v-if="dealrecord.did == 0 && dealrecord.defer == 1"
+                            <span v-if="dealrecord.did == 1 && dealrecord.defer == 1"
                                   style="text-decoration: none; color: #000000;font-size: 17px;">等待审批</span>
-                            <span v-if="dealrecord.did == 0 && dealrecord.defer == 2"
+                            <span v-if="dealrecord.did == 1 && dealrecord.defer == 2"
                                   style="text-decoration: none; color: #000000;font-size: 17px;">延期三天</span>
-                            <span v-if="dealrecord.did == 0 && dealrecord.defer == 3"
+                            <span v-if="dealrecord.did == 1 && dealrecord.defer == 3"
                                   style="text-decoration: none; color: #000000;font-size: 17px;">延期失败</span>
                         </td>
                     </tr>
@@ -220,13 +220,13 @@
                 this.isLightNum = i;
             },
             initdealrecordList(pageNum) {
-                axios.get('dealrecord/getAllByHid?page=' + pageNum + '&hid=' + this.hid).then(result => {
-                    this.dealrecordList = result.data.list;
-                    this.total = result.data.total;
+                axios.get('dealrecord/getAllByHid?no=' + pageNum + '&hid=' + this.hid).then(result => {
+                    console.log(result.data.data.records);
+                    let data = result.data.data;
+                    this.dealrecordList = data.records;
+                    this.total = data.total;
                     this.pageNum = pageNum;
-                    this.pages = result.data.pages;
-                    this.isFirstPage = result.data.isFirstPage;
-                    this.isLastPage = result.data.isLastPage;
+                    this.pages = data.pages;
                 });
             },
             front() {
