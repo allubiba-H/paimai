@@ -12,9 +12,12 @@ import com.paipai.paipai.mapper.HuiyuanMapper;
 import com.paipai.paipai.mapper.MoneyrecordMapper;
 import com.paipai.paipai.service.IDealrecordService;
 import com.paipai.paipai.util.Constant;
+import com.paipai.paipai.util.JavaMailSenderUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import java.util.List;
 
 /**
  * <p>
@@ -62,5 +65,35 @@ public class DealrecordServiceImpl extends ServiceImpl<DealrecordMapper, Dealrec
         moneyrecord.setMtype(Constant.USE_MONEY);
         moneyrecord.setMbackup("竞拍付款");
         moneyrecordMapper.insert(moneyrecord);
+    }
+
+    @Override
+    public void beakAuction(List<Dealrecord> list) throws MessagingException {
+        for (Dealrecord d : list) {
+            //修改违约
+            d.setDid(Constant.DEAL_STATE_DEFAULT);
+            dealrecordMapper.updateById(d);
+            //修改会员的冻结金额
+            UpdateWrapper<Huiyuan> huiyuanUpdateWrapper = new UpdateWrapper<>();
+            Integer abmoney = auctionMapper.selectById(d.getAid()).getAbmoney();
+            huiyuanUpdateWrapper.setSql("hicemoney = hicemoney - " + abmoney);
+            huiyuanUpdateWrapper.eq("hid",d.getHid());
+            huiyuanMapper.update(null, huiyuanUpdateWrapper);
+            //添加资金记录
+            Moneyrecord moneyrecord = new Moneyrecord();
+            moneyrecord.setHid(d.getHid());
+            moneyrecord.setMtype(Constant.BreakAuction);
+            moneyrecord.setHname(d.getHname());
+            moneyrecord.setCjmoney(d.getCjmoney());
+            moneyrecord.setMbackup("违约金额");
+            moneyrecordMapper.insert(moneyrecord);
+            String to = huiyuanMapper.selectById(d.getHid()).getHemail();
+            String subject = "卓越拍卖提醒你";
+            String text = "您没在三天之内付款，现在将扣除你的冻结金额，请进入查看<a href='http://localhost:63342/paimaisystem/paimaiclient/login.html'>卓越拍卖</a>";
+            JavaMailSenderUtil javaMailSenderUtil = new JavaMailSenderUtil();
+            javaMailSenderUtil.send(to,subject,text);
+        }
+
+
     }
 }

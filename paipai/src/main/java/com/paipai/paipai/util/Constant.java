@@ -7,6 +7,8 @@ public class Constant {
     public static final Integer USE_MONEY = 1;
     //体现
     public static final Integer EXTRACT_MONEY = 2;
+    //违约
+    public static final Integer BreakAuction = 3;
     //拍品状态等待审核
     public static final Integer AUCTION_STATE_WAIT = 1;
     //拍品状态等待审核

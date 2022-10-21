@@ -9,16 +9,16 @@ import com.paipai.paipai.service.IAuctionService;
 import com.paipai.paipai.service.IDealrecordService;
 import com.paipai.paipai.service.IHuiyuanService;
 import com.paipai.paipai.util.Constant;
+import com.paipai.paipai.util.JavaMailSenderUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class Job {
         service.update(wrapper);
     }
 
-    @Scheduled(cron = "0 26 9 * * ?")
+    @Scheduled(cron = "0 0 20 * * ?")
     public void endAuction() throws MessagingException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String now = sdf.format(new Date());
@@ -79,15 +79,28 @@ public class Job {
             dealrecord.setHname(huiyuan.getHname());
             dealrecordService.save(dealrecord);
             //发送邮箱
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage,true);
-            messageHelper.setFrom(from);
-            messageHelper.setTo(huiyuan.getHemail());
-            messageHelper.setSubject("恭喜您，成功竞拍了卓越拍拍上的商品");
-            messageHelper.setText("您已经成功竞拍"+ "<a href='http://localhost:63342/paimaisystem/paimaiclient/login.html'>进入查看</a>" + "请于三天之内付款，否则违约",true);
-            javaMailSender.send(mimeMessage);
+            String to = huiyuan.getHemail();
+            String subject = "恭喜您，成功竞拍了卓越拍拍上的商品";
+            String text = "您已经成功竞拍"+ "<a href='http://localhost:63342/paimaisystem/paimaiclient/login.html'>进入查看</a>;请于三天之内付款，否则违约";
+            JavaMailSenderUtil javaMailSenderUtil = new JavaMailSenderUtil();
+            javaMailSenderUtil.send(to,subject,text);
         }
     }
 
+    @Scheduled(cron = "0 48 10 * * ?")
+    public void breakAuction() throws MessagingException {
+        QueryWrapper<Dealrecord> wrapper = new QueryWrapper<>();
+        wrapper.eq("did",Constant.DEAL_STATE_UNPAIED);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DAY_OF_MONTH,-4);
+        Date time = c.getTime();
+        wrapper.eq("cjtime",new SimpleDateFormat("yyyy-MM-dd").format(time));
+        List<Dealrecord> list = dealrecordService.list(wrapper);
+        dealrecordService.beakAuction(list);
+
+
+    }
 
 }
