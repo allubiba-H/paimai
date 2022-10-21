@@ -221,5 +221,26 @@ public class AuctionController {
         dealrecordService.pay(id);
         return R.success("付款成功");
     }
+
+    @PostMapping("upload")
+    public R upload(MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        assert filename != null;
+        String prfex = filename.substring(filename.lastIndexOf("."));
+        String pic = UUID.randomUUID() + prfex;
+        File file1 = new File("D:\\Developer\\HuaQingYuanJian\\software\\nginx\\html\\upload\\img", pic);
+        try {
+            file.transferTo(file1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return R.success(pic);
+    }
+    @PostMapping("adminSaveAuction")
+    public R adminSaveAuction(Auction auction) {
+        auction.setState(Constant.AUCTION_STATE_AUDIT);
+        auctionService.save(auction);
+        return R.success("添加成功");
+    }
 }
 

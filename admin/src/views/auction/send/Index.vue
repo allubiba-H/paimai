@@ -23,7 +23,8 @@
           <el-form-item label="开始时间" required>
             <div class="block">
               <el-date-picker
-                v-model="auctionForm.time"
+                value-format="yyyy-MM-dd"
+                v-model="time"
                 type="daterange"
                 align="right"
                 unlink-panels
@@ -46,16 +47,15 @@
       </el-col>
       <el-col :span="12">
         <el-upload
-          class="upload-demo"
-          ref="upload"
-          action="http://localhost:8888/paipai/auction/addAuction"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :file-list="fileList"
-          :auto-upload="false">
-          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          class="avatar-uploader"
+          action="http://localhost:8888/paipai/auction/upload"
+          auto-upload
+          multiple
+          :show-file-list="true"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-col>
     </el-row>
@@ -64,6 +64,7 @@
 <script>
 
 import {getPtypes} from "@/api/ptype";
+import {save} from "@/api/auction";
 
 export default {
 
@@ -96,7 +97,6 @@ export default {
           }
         }]
       },
-      fileList: '',
       typesList: [],
       auctionForm: {
         gname: '',
@@ -106,10 +106,13 @@ export default {
         increase: '',
         abmoney: '',
         cflag: 2,
-        time: '',
+        gzan:0,
+        anum:0,
+        createrid:0,
         cbackup: ''
       },
-      dialogImageUrl: '',
+      time: '',
+      imageUrl: '',
       dialogVisible: false,
 
     };
@@ -123,21 +126,51 @@ export default {
         this.typesList = res.data;
       });
     },
-    submitForm(formName) {
-      console.log(this.auctionForm);
+    submitForm() {
+      let [start,end] = this.time;
+      this.auctionForm['stime'] = start;
+      this.auctionForm['etime'] = end;
+      save(this.auctionForm).then((res)=>{
+        console.log(res);
+      })
+
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+      this.auctionForm.gpic = res.data;
     },
-    handleRemove(file) {
-      this.dialogImageUrl = file;
+    beforeAvatarUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isLt2M;
     },
-    handlePreview(file) {
-      console.log(file);
-    },
-    submitUpload(file) {
-      this.$refs.upload.submit();
-    }
   }
 }
 </script>
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>

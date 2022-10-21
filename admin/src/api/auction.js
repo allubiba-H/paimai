@@ -23,3 +23,11 @@ export function del(id) {
     params: {id}
   })
 }
+
+export function save(data) {
+  return request({
+    url:'auction/adminSaveAuction',
+    method:'post',
+    params:data
+  })
+}
