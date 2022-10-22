@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-row>
-      <el-col :span="12">
-        <el-form :model="auctionForm" ref="auctionForm" label-width="100px" class="demo-ruleForm">
+    <el-form :model="auctionForm" ref="auctionForm" label-width="100px" class="demo-ruleForm" style="margin: 20px">
+      <el-row>
+        <el-col :span="12">
           <el-form-item label="拍品名称" required prop="gname">
             <el-input v-model="auctionForm.gname"></el-input>
           </el-form-item>
@@ -38,27 +38,30 @@
           <el-form-item label="备注" required prop="cbackup">
             <el-input type="textarea" v-model="auctionForm.cbackup"></el-input>
           </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
-          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <div class="right-uploader">
+            <el-col>图片上传</el-col>
+            <el-upload
+              class="avatar-uploader "
+              action="http://localhost:8888/paipai/auction/upload"
+              auto-upload
+              multiple
+              :show-file-list="true"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
 
-        </el-form>
-      </el-col>
-      <el-col :span="12">
-        <el-upload
-          class="avatar-uploader"
-          action="http://localhost:8888/paipai/auction/upload"
-          auto-upload
-          multiple
-          :show-file-list="true"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
-          <img v-if="imageUrl" :src="imageUrl" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-      </el-col>
-    </el-row>
+        </el-col>
+      </el-row>
+      <el-form-item style="text-align: center">
+        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+        <el-button @click="resetForm('ruleForm')">重置</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 <script>
@@ -181,5 +184,15 @@ export default {
   width: 178px;
   height: 178px;
   display: block;
+}
+
+.right-uploader {
+  text-align: center;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 90px;
 }
 </style>
