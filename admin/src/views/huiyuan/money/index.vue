@@ -59,11 +59,11 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :page-count="page_size"
         :current-page="page_current"
-        :page-sizes="[10,20]"
+        :page-size="page_size"
+        :page-count="page_count"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+        :total="info_total">
       </el-pagination>
     </div>
     <!-- 编辑时候的弹出层 -->
@@ -101,7 +101,8 @@
 </template>
 
 <script>
-import {del, getAllMoneyRocred, getByName, insert} from "@/api/moneyrecord";
+import {del, getAllMoneyRocred, insert} from "@/api/moneyrecord";
+import {search} from "@/api/common";
 
 export default {
   filters: {
@@ -117,9 +118,10 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
+      page_count: 0,
       page_current: 1,
       page_size: 10,
-      total: 0,
+      info_total: 0,
       list: null,
       fromTitle: '',
       listLoading: false,
@@ -135,26 +137,31 @@ export default {
     }
   },
   created() {
-    this.fetchData()
+    this.fetchData(this.page_current,this.page_size)
   },
   methods: {
     //初始化
-    fetchData() {
+    fetchData(page,size) {
       this.listLoading = true
-      getAllMoneyRocred(this.page_current, this.page_size).then(response => {
-        this.list = response.data.records;
-        this.page_current = response.data.current;
-        this.total = response.data.total;
-        this.listLoading = false
+      getAllMoneyRocred(page,size).then(res => {
+        let p = res.data;
+        this.page_current = p.current;
+        this.page_size = p.size;
+        this.page_count = p.pages;
+        this.info_total = p.total;
+        this.list = p.records;
+        this.listLoading = false;
       })
     },
     //查询
     OnSearch() {
-      this.listLoading = true;
-      getByName(this.search).then(response => {
-        this.list = response.data.records;
-        this.listLoading = false;
-      })
+      if (this.search != '') {
+        search("moneyrecord", this.search).then((res) => {
+          this.list = res.data
+        })
+      } else {
+        this.fetchData(this.page_current, this.page_size);
+      }
     },
     handleEdit(row) {
       this.fromTitle = "编辑用户";
@@ -171,6 +178,11 @@ export default {
           this.$message.success(response.data);
           this.fetchData();
         })
+      }).catch((res) =>{
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
       })
     },
     handleSelectionChange(val) {

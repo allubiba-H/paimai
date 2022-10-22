@@ -150,7 +150,6 @@ export default {
       page_count: 0,
       page_current: 1,
       page_size: 10,
-      page_total: 0,
       info_total: 0,
       form: {}
     }

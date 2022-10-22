@@ -7,13 +7,6 @@ export function getAdminList() {
   })
 }
 
-export function getAdminByName(param) {
-  return request({
-    url: 'admin/getByName',
-    method: 'get',
-    params: {username: param}
-  })
-}
 
 export function del(param) {
   return request({

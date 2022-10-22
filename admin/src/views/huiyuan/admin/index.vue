@@ -6,7 +6,7 @@
       v-loading="listLoading"
       :data="list"
       style="width: 100%"
-      max-height="350"
+      max-height="400"
       ref="tableList"
       element-loading-text="Loading"
       border
@@ -65,7 +65,8 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="page_current"
-        :page-size="pages"
+        :page-size="page_size"
+        :page-count="page_count"
         layout="total, sizes, prev, pager, next, jumper"
         :total="info_total">
       </el-pagination>
@@ -106,6 +107,7 @@
 
 <script>
 import {getAll} from "@/api/huiyuan";
+import {search} from "@/api/common";
 
 export default {
   filters: {
@@ -123,8 +125,9 @@ export default {
       dialogFormVisible: false,
       list: null,
       page_current: 1,
-      page_total: 10,
-      pages: '',
+      info_total: 0,
+      page_size: 10,
+      page_count:0,
       fromTitle: '',
       listLoading: true,
       search: '',
@@ -138,28 +141,36 @@ export default {
     }
   },
   created() {
-    this.fetchData()
+    this.fetchData(this.page_current,this.page_size);
   },
   methods: {
     //初始化
-    fetchData() {
+    fetchData(page,size) {
       this.listLoading = true
-      getAll(this.page_current, this.page_total).then(response => {
-        console.log(response.data);
-        this.page_current = response.data.current;
-        this.info_total = response.data.total;
-        this.pages = response.data.pages;
-        this.list = response.data.records;
-        this.listLoading = false
+      getAll(page, size).then(response => {
+        let res = response.data;
+        this.page_current = res.current;
+        this.page_size = res.size;
+        this.page_count = res.pages;
+        this.info_total = res.total;
+        this.list = res.records;
+        this.listLoading = false;
+
       })
     },
     //查询
     OnSearch() {
-      this.listLoading = true;
-      getAdminByName(this.search).then(response => {
-        this.list = (response.data);
-        this.listLoading = false;
-      })
+      if (this.search != '') {
+        this.listLoading = true;
+        search("huiyuan",this.search).then(response => {
+          this.list = response.data;
+          this.listLoading = false;
+        })
+      }
+      else {
+        this.fetchData(this.page_current,this.page_size);
+      }
+
     },
     handleEdit(row) {
       this.fromTitle = "编辑用户";
@@ -175,6 +186,11 @@ export default {
           this.$message.success(response.data);
           this.fetchData();
         })
+      }).catch((err)=>{
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
       })
     },
     handleSelectionChange(val) {

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * <p>
@@ -119,6 +120,13 @@ public class HuiyuanController {
     public R getAll(Integer page, Integer size) {
         Page<Huiyuan> huiyuanPage = huiyuanService.page(new Page<>(page, size));
         return R.success(huiyuanPage);
+    }
+    @GetMapping("search")
+    public R search(String item) {
+        QueryWrapper<Huiyuan> wrapper = new QueryWrapper<>();
+        wrapper.like("hname",item);
+        List<Huiyuan> list = huiyuanService.list(wrapper);
+        return R.success(list);
     }
 
 

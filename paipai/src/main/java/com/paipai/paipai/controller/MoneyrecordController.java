@@ -9,6 +9,7 @@ import com.paipai.paipai.util.R;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -51,12 +52,12 @@ public class MoneyrecordController {
         return R.success("更新成功");
     }
 
-    @GetMapping("getByName")
-    public R getByName(String name) {
+    @GetMapping("search")
+    public R getByName(String item) {
         QueryWrapper<Moneyrecord> wrapper = new QueryWrapper<>();
-        wrapper.like("hname", name);
-        Page<Moneyrecord> moneyrecordPage = moneyrecordService.page(new Page<>(1, 10), wrapper);
-        return R.success(moneyrecordPage);
+        wrapper.like("hname", item);
+        List<Moneyrecord> list = moneyrecordService.list(wrapper);
+        return R.success(list);
     }
 
     @GetMapping("showMoneyRecordByTime")
