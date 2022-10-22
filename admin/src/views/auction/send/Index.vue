@@ -2,25 +2,25 @@
   <div>
     <el-row>
       <el-col :span="12">
-        <el-form :model="auctionForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-          <el-form-item label="拍品名称" required>
+        <el-form :model="auctionForm" ref="auctionForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="拍品名称" required prop="gname">
             <el-input v-model="auctionForm.gname"></el-input>
           </el-form-item>
-          <el-form-item label="商品类型" required>
+          <el-form-item label="商品类型" required prop="tid">
             <el-select v-model="auctionForm.tid" placeholder="请选择商品类型">
               <el-option v-for="item in typesList" :label="item.tname" :value="item.tid"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="起拍价" required>
+          <el-form-item label="起拍价" required prop="bprice">
             <el-input-number v-model="auctionForm.bprice" controls-position="right" :min="0"></el-input-number>
           </el-form-item>
-          <el-form-item label="增长价" required>
+          <el-form-item label="增长价" required prop="increase">
             <el-input-number v-model="auctionForm.increase" controls-position="right" :min="0"></el-input-number>
           </el-form-item>
-          <el-form-item label="保证金" required>
+          <el-form-item label="保证金" required prop="abmoney">
             <el-input-number v-model="auctionForm.abmoney" controls-position="right" :min="0"></el-input-number>
           </el-form-item>
-          <el-form-item label="开始时间" required>
+          <el-form-item label="开始时间" prop="time">
             <div class="block">
               <el-date-picker
                 value-format="yyyy-MM-dd"
@@ -35,12 +35,12 @@
               </el-date-picker>
             </div>
           </el-form-item>
-          <el-form-item label="备注">
+          <el-form-item label="备注" required prop="cbackup">
             <el-input type="textarea" v-model="auctionForm.cbackup"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('auctionForm')">立即创建</el-button>
-            <el-button @click="resetForm('auctionForm')">重置</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+            <el-button @click="resetForm('ruleForm')">重置</el-button>
           </el-form-item>
 
         </el-form>
@@ -106,9 +106,9 @@ export default {
         increase: '',
         abmoney: '',
         cflag: 2,
-        gzan:0,
-        anum:0,
-        createrid:0,
+        gzan: 0,
+        anum: 0,
+        createrid: 0,
         cbackup: ''
       },
       time: '',
@@ -127,13 +127,19 @@ export default {
       });
     },
     submitForm() {
-      let [start,end] = this.time;
+      let [start, end] = this.time;
       this.auctionForm['stime'] = start;
       this.auctionForm['etime'] = end;
-      save(this.auctionForm).then((res)=>{
-        console.log(res);
+      save(this.auctionForm).then((res) => {
+        if (res.code == 0) {
+          this.$message.success(res.data);
+          this.resetForm();
+        }
       })
 
+    },
+    resetForm() {
+      this.$refs['auctionForm'].resetFields();
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
@@ -157,9 +163,11 @@ export default {
   position: relative;
   overflow: hidden;
 }
+
 .avatar-uploader .el-upload:hover {
   border-color: #409EFF;
 }
+
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
@@ -168,6 +176,7 @@ export default {
   line-height: 178px;
   text-align: center;
 }
+
 .avatar {
   width: 178px;
   height: 178px;
