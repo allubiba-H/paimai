@@ -58,8 +58,6 @@ public class Job {
         //修改拍品表，结束时间，状态
         UpdateWrapper<Auction> wrapper = new UpdateWrapper<>();
         wrapper.set("state", Constant.AUCTION_STATE_AUCTIONED);
-        wrapper.eq("state", Constant.AUCTION_STATE_AUCTIONING);
-        wrapper.eq("etime", now);
         service.update(wrapper);
         //插入交易记录
         for (Auction ac : auctionList) {

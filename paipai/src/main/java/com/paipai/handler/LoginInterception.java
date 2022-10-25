@@ -16,7 +16,6 @@ public class LoginInterception implements HandlerInterceptor {
         if (jwt.getToken().isEmpty()) {
             flag = false;
         }
-
         return flag;
     }
 
