@@ -91,15 +91,15 @@ export const constantRoutes = [
     children: [
       {
         path: 'ptype',
-        component: () => import('@/views/nested/menu1/index'),
+        component: () => import('@/views/system/admin/info/productTypes/index'),
         meta: {title: '商品类型管理', icon: 'el-icon-shopping-bag-1'}
       }, {
         path: 'p_status',
-        component: () => import('@/views/nested/menu1/index'),
+        component: () => import('@/views/system/admin/info/auctionState/index'),
         meta: {title: '拍卖状态管理', icon: 'el-icon-shopping-bag-1'}
       }, {
         path: 'sail_status',
-        component: () => import('@/views/nested/menu1/index'),
+        component: () => import('@/views/system/admin/info/dealState/index'),
         meta: {title: '成交状态管理', icon: 'el-icon-shopping-bag-1'}
       }
     ]

@@ -1,11 +1,11 @@
 package com.paipai.paipai.controller;
 
 
-import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.paipai.paipai.entity.Ptypes;
 import com.paipai.paipai.service.IPtypesService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.paipai.paipai.util.R;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -25,8 +25,17 @@ public class PtypesController {
 
     @PostMapping("selectList")
     public R getAll() {
-        return R.ok(ptypesService.list());
+        return R.success(ptypesService.list());
     }
 
+    @PostMapping("insert")
+    public R insert(Ptypes ptypes) {
+        ptypesService.save(ptypes);
+        return R.success("添加成功");
+    }
+    @GetMapping("getAll")
+    public R getAll(@RequestParam(required = true,defaultValue = "1") Integer no, Integer size) {
+        return R.success(ptypesService.page(new Page<>(no,size)));
+    }
 }
 

@@ -242,5 +242,10 @@ public class AuctionController {
         auctionService.save(auction);
         return R.success("添加成功");
     }
+
+    @GetMapping("getAllAdmin")
+    public R getAllAdmin(@RequestParam(required = true,defaultValue = "1")Integer no,Integer size) {
+        return R.success(auctionService.page(new Page<>(no,size)));
+    }
 }
 

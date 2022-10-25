@@ -31,3 +31,10 @@ export function save(data) {
     params:data
   })
 }
+export function getAllAdmin(no,size) {
+  return request({
+    url:'auction/getAllAdmin',
+    method:'get',
+    params:{no,size}
+  })
+}

@@ -6,3 +6,17 @@ export function getPtypes() {
     method: 'post'
   })
 }
+export function insert(data) {
+  return request({
+    url:'ptypes/insert',
+    method:'post',
+    params:data
+  })
+}
+export function getPtypesOfPages(no,size) {
+  return request({
+    url:'ptypes/getAll',
+    method:'get',
+    params:{no,size}
+  })
+}
