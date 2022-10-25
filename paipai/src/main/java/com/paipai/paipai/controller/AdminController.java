@@ -80,6 +80,11 @@ public class AdminController {
         return R.success("删除成功");
     }
 
+    /**
+     * 执行添加操作
+     * @param admin 管理员对象
+     * @return 对象
+     */
     @PostMapping("insert")
     public R addorUpdate(Admin admin) {
         System.out.println(admin);
@@ -87,6 +92,11 @@ public class AdminController {
         return R.success("更新成功");
     }
 
+    /**
+     * 批量删除
+     * @param arr 数组
+     * @return
+     */
     @PostMapping("batchDel")
     public R batchDel(@RequestBody Integer[] arr) {
         return R.success(arr);
